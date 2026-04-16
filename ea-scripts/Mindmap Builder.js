@@ -1245,6 +1245,44 @@ const parseText = async (text) => {
 
 const parseImageInput = (input) => {
   const trimmed = trimText(input);
+
+  // Check for external/local markdown image link: ![](http...) or ![](file...)
+  const externalMatch = trimmed.match(/^!\[(.*?)\]\(((?:https?|file):\/\/[^)]+)\)$/i);
+  if (externalMatch) {
+    const altText = externalMatch[1];
+    const url = externalMatch[2];
+    
+    let width = null;
+    if (altText) {
+      const parts = altText.split("|");
+      const last = parts[parts.length - 1];
+      if (/^\d+$/.test(last)) {
+        width = parseInt(last);
+      }
+    }
+    
+    try {
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname.toLowerCase();
+      // Heuristic: check if the URL points to a standard image file extension
+      const isImageUrl = IMAGE_TYPES.some(ext => pathname.endsWith("." + ext));
+      
+      if (isImageUrl) {
+        return {
+          path: url,
+          width,
+          imageFile: null,
+          isImagePath: true, // This triggers image addition in addNode
+          file: null,
+          isExternalImage: true // Flag to help direct link assignments later
+        };
+      }
+    } catch (e) {}
+    
+    // If not matching an image extension, return null so parseEmbeddableInput takes over
+    return null;
+  }
+
   if (!trimmed.startsWith("![[") || !trimmed.endsWith("]]")) return null;
 
   const content = trimmed.slice(3, -2);
@@ -1285,8 +1323,13 @@ const parseImageInput = (input) => {
 
 const parseEmbeddableInput = (input, imageInfo) => {
   const trimmed = input.trim();
-  const match = trimmed.match(/^!\[\]\((https?:\/\/[^)]+)\)$/);
-  if (match) return match[1];
+  // Ensure we capture potential alt-text formatting so we gracefully match the pattern
+  const match = trimmed.match(/^!\[(.*?)\]\(((?:https?|file):\/\/[^)]+)\)$/i);
+  if (match) {
+    // If parseImageInput already claimed this as an external image, do not override
+    if (imageInfo && imageInfo.isExternalImage) return null;
+    return match[2];
+  }
   const pathSplit = imageInfo?.path?.split("#");
   if (imageInfo && imageInfo.file && imageInfo.file.extension === "md" &&
     // Not an Excalidraw File or maybe an Excalidraw file with a back-of-the-card note reference 
@@ -4802,16 +4845,30 @@ const triggerGlobalLayout = async (rootId, forceUngroup = false, mustHonorMindma
     
     await run(allElements, mindmapIds, root, false, sharedSets, mustHonorMindmapOrder);
     
-    if (structuralGroupId) {
-      ea.addToGroup(groupedElementIds);
+    if (structuralGroupId && !forceUngroup) {
+      // Restore the exact same group ID instead of creating a new one
+      // This prevents Excalidraw's editingGroupId from pointing to a deleted group,
+      // which causes the 0x0 rendering artifact at the origin.
+      groupedElementIds.forEach(id => {
+        const el = ea.getElement(id);
+        if (el && (!el.groupIds || !el.groupIds.includes(structuralGroupId))) {
+          el.groupIds = [...(el.groupIds || []), structuralGroupId];
+        }
+      });
     }
     await addElementsToView({ captureUpdate: "IMMEDIATELY" });
 
   } else {
     // If only visual change (no struct change, no boundary move), commit Run 1
     if (result1.visualChange) {
-      if (structuralGroupId) {
-        ea.addToGroup(groupedElementIds);
+      if (structuralGroupId && !forceUngroup) {
+        // Restore the exact same group ID instead of creating a new one
+        groupedElementIds.forEach(id => {
+          const el = ea.getElement(id);
+          if (el && (!el.groupIds || !el.groupIds.includes(structuralGroupId))) {
+            el.groupIds = [...(el.groupIds || []), structuralGroupId];
+          }
+        });
       }
       await addElementsToView({ captureUpdate: "IMMEDIATELY" });
     } else {
@@ -4990,6 +5047,11 @@ const addNode = async (text, follow = false, skipFinalLayout = false, batchModeA
         width: imageInfo.width,
         depth
       });
+      // Attach the URL to the element's link so we can trace it back
+      if (imageInfo.isExternalImage && newNodeId) {
+        const el = ea.getElement(newNodeId);
+        if (el && !el.link) el.link = imageInfo.path;
+      }
     } else if (imageInfo?.imageFile) {
       newNodeId = await addImage({
         pathOrFile: imageInfo.imageFile,
@@ -5144,6 +5206,11 @@ const addNode = async (text, follow = false, skipFinalLayout = false, batchModeA
         y: py,
         depth
       });
+      // Attach the URL to the element's link so we can trace it back
+      if (imageInfo.isExternalImage && newNodeId) {
+        const el = ea.getElement(newNodeId);
+        if (el && !el.link) el.link = imageInfo.path;
+      }
     } else if (imageInfo?.imageFile) {
       newNodeId = await addImage({
         pathOrFile: imageInfo.imageFile,
@@ -5410,16 +5477,24 @@ const getTextFromNode = (all, node, getRaw = false, shortPath = false) => {
   if (node.type === "image") {
     const embeddedFile = ea.targetView?.excalidrawData?.getFile(node.fileId);    
     if (!embeddedFile) return "";
+    
+    const file = ea.getViewFileForImageElement(node);
+    
+    // Handle external image URLs or local file URIs saved in node.link
+    if (!file && node.link && node.link.match(/^(https?|file):\/\//i)) {
+      return `![image|${Math.round(node.width)}](${node.link})`;
+    }
+
     if (shortPath) {
       const originalPath = embeddedFile.linkParts?.original;
       return `![[${originalPath}|${Math.round(node.width)}]]`;
     }
-    const file = ea.getViewFileForImageElement(node);
+    
     if (file) {
       if (file.extension === "pdf" && node.link?.startsWith("[[")) {
         return `!${node.link.match(/^(.*?)\]\]/)[1]}|${Math.round(node.width)}]]`;
       }
-      return  `![[${file.path}${embeddedFile.filenameparts?.linkpartReference}|${Math.round(node.width)}]]`;
+      return  `![[${file.path}${embeddedFile.filenameparts?.linkpartReference || ""}|${Math.round(node.width)}]]`;
     }
     return "";
   }
@@ -6735,18 +6810,21 @@ const changeNodeOrder = async (key) => {
         
         // Gather all elements in branch + decorations
         const branchIds = getBranchElementIds(current.id, allElements);
+        
+        // Use the specialized function to get decorations and crosslinks 
+        // to safely ignore structural groups that might encompass the entire map
+        const decorationAndCrossLinkIds = getDecorationAndCrossLinkIdsForBranches(branchIds, allElements, info.rootId);
+        
         const elementsToMove = new Set();
         
         branchIds.forEach(id => {
            const el = allElements.find(x => x.id === id);
-           if (el) {
-             elementsToMove.add(el);
-             // Include attached decorations (grouped elements)
-             if (el.groupIds && el.groupIds.length > 0) {
-                const groupEls = ea.getElementsInTheSameGroupWithElement(el, allElements);
-                groupEls.forEach(gEl => elementsToMove.add(gEl));
-             }
-           }
+           if (el) elementsToMove.add(el);
+        });
+        
+        decorationAndCrossLinkIds.forEach(id => {
+           const el = allElements.find(x => x.id === id);
+           if (el) elementsToMove.add(el);
         });
         
         const arr = Array.from(elementsToMove);
@@ -7627,7 +7705,11 @@ const toggleBox = async (shape = "rectangle") => {
     const container = allElements.find((el) => el.id === containerId);
     ea.copyViewElementsToEAforEditing(arrowsToUpdate.concat(sel, container));
     const textEl = ea.getElement(sel.id);
-    ea.addAppendUpdateCustomData(textEl.id, { isPinned: !!container.customData?.isPinned, mindmapOrder: container.customData?.mindmapOrder });
+    
+    // Transfer all custom data from the container back to the text element
+    const dataToCopy = { ...(container.customData || {}) };
+    ea.addAppendUpdateCustomData(textEl.id, dataToCopy);
+    
     textEl.containerId = null;
     textEl.boundElements =[]; //not null because I will add bound arrows a bit further down
     ea.getElement(containerId).isDeleted = true;
@@ -7648,7 +7730,11 @@ const toggleBox = async (shape = "rectangle") => {
     
     finalElId = newBindId = rectId;
     const rect = ea.getElement(rectId);
-    ea.addAppendUpdateCustomData(rectId, { isPinned: !!sel.customData?.isPinned, mindmapOrder: sel.customData?.mindmapOrder });
+    
+    // Transfer all custom data from the text element to the new container
+    const dataToCopy = { ...(sel.customData || {}) };
+    ea.addAppendUpdateCustomData(rectId, dataToCopy);
+    
     rect.strokeColor = ea.getCM(sel.strokeColor).stringRGB();
     rect.strokeWidth = getStrokeWidthForDepth(depth);
     rect.roughness = getAppState().currentItemRoughness;
@@ -8252,6 +8338,11 @@ const commitEdit = async () => {
           width: imageInfo.width,
           depth,
         });
+        // Check for external image flag and append to link to preserve routing
+        if (imageInfo.isExternalImage && newNodeId) {
+          const el = ea.getElement(newNodeId);
+          if (el && !el.link) el.link = imageInfo.path;
+        }
       } else {
         newNodeId = await addImage({
           pathOrFile: imageInfo.imageFile,
@@ -8968,7 +9059,7 @@ const renderInput = (container, isFloating = false) => {
     inputRow.controlEl.style.width = "100%";
     inputRow.controlEl.style.marginTop = "8px";
   } else {
-    container.style.width = "70vw";
+    container.style.width = "85vw";
     container.style.maxWidth = "calc((var(--icon-size) + 2 * var(--size-2-3)) * 17)";
     inputRow.settingEl.style.border = "none";
     inputRow.settingEl.style.padding = "0";
@@ -9892,6 +9983,7 @@ const registerStyles = () => {
     " overflow: hidden;",
     " scrollbar-width: none;",
     "}",
+    ".excalidraw-mindmap-ui .modal-header-button {display: none;}",
     // Focus styles
     ".excalidraw-mindmap-ui button:focus,",
     ".excalidraw-mindmap-ui .clickable-icon:focus,",
@@ -9988,9 +10080,11 @@ const toggleDock = async ({silent=false, forceDock=false, saveSetting=false} = {
   if (isUndocked) {
     // UNDOCK: Initialize floating modal
     floatingInputModal = new ea.FloatingModal(ea.plugin.app);
-    const { contentEl, titleEl, modalEl, headerEl } = floatingInputModal;
+    const { contentEl, titleEl, modalEl, headerEl, bgEl } = floatingInputModal;
     modalEl.classList.add("excalidraw-mindmap-ui");
-
+    if (bgEl) {
+      bgEl.style.display="none";
+    }
     floatingInputModal.onOpen = () => {
       // Reparent modal to target view window
       if (ea.targetView && modalEl.ownerDocument !== ea.targetView.ownerDocument) {
@@ -10017,9 +10111,13 @@ const toggleDock = async ({silent=false, forceDock=false, saveSetting=false} = {
         //otherwise the event handlers in FloatingModal would override the move
         //leaving modalEl in the center of the view
         //modalEl.style.top and left must stay in the timeout call
-        modalEl.style.top = `${ y + FLOAT_MODAL_OFFSET }px`;
+        const {x, y} = ea.targetView.contentEl.getBoundingClientRect();
+        const desktopShift = !!ea.targetView.contentEl.querySelector(".App-bottom-bar .App-toolbar")
+          ? 0
+          : (ea.targetView.contentEl.clientWidth < 1200 ? 36 : 0);
+        modalEl.style.top = `${ y + FLOAT_MODAL_OFFSET + desktopShift}px`;
         modalEl.style.left = `${ x + FLOAT_MODAL_OFFSET }px`;
-      }, 100);
+      }, ea.DEVICE.isMobile ? 400:150);
     };
 
     floatingInputModal.onClose = () => {
