@@ -641,6 +641,23 @@ summary.excalidraw-setting-h3 {
   margin-block-end: var(--p-spacing);
 }
 
+/* Modifier key settings column headers */
+.modifier-key-header-row {
+  padding-block: 2px;
+  min-height: unset;
+  border-top: none;
+}
+
+.modifier-key-col-header {
+  display: inline-flex;
+  width: var(--toggle-width, 40px);
+  justify-content: center;
+  font-size: var(--font-smallest);
+  color: var(--text-muted);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.03em;
+}
+
 summary.excalidraw-setting-h4 {
   font-variant: var(--h4-variant);
   letter-spacing: -0.015em;

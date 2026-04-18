@@ -45,6 +45,31 @@ export class ModifierKeySettingsComponent {
         text: t("DEFAULT_ACTION_DESC") + modifierKeyTooltipMessages()[modifierSetType][modifierKeys.defaultAction],
         cls: "setting-item-description"
       });
+      // Ensure all LinkClickAction rules have ctrl_cmd enabled
+      if (modifierSetType === "LinkClickAction") {
+        let dirty = false;
+        modifierKeys.rules.forEach((rule) => {
+          if (!rule.ctrl_cmd) { rule.ctrl_cmd = true; dirty = true; }
+        });
+        if (dirty) this.update?.();
+      }
+
+      // Column header row
+      const headerSetting = new Setting(detailsEl);
+      headerSetting.settingEl.addClass("modifier-key-header-row");
+      headerSetting.infoEl.remove();
+      [
+        "SHIFT",
+        this.isMacOS ? "CMD" : "CTRL",
+        this.isMacOS ? "OPT" : "ALT",
+        this.isMacOS ? "CTRL" : "META",
+      ].forEach((key) => {
+        headerSetting.controlEl.createEl("span", {
+          text: key,
+          cls: "modifier-key-col-header",
+        });
+      });
+
       Object.entries(modifierKeys.rules).forEach(([action, rule]) => {
         const setting = new Setting(detailsEl)
         //@ts-ignore
@@ -60,14 +85,18 @@ export class ModifierKeySettingsComponent {
             })
           );
         setting.addToggle((toggle) => {
+          const isLinkClick = modifierSetType === "LinkClickAction";
           toggle
-            .setValue(rule.ctrl_cmd)
+            .setValue(isLinkClick ? true : rule.ctrl_cmd)
             .setTooltip(this.isMacOS ? "CMD" : "CTRL")
             .onChange((value) => {
               rule.ctrl_cmd = value;
               this.update();
-            })
-          if(this.isMacOS && modifierSetType !== "LinkClickAction") {
+            });
+          if (isLinkClick || this.isMacOS) {
+            // CMD is always required for link-click actions (Excalidraw detects
+            // the click via CMD being held). On macOS, CMD is also reserved for
+            // non-link-click actions.
             toggle.setDisabled(true);
             toggle.toggleEl.style.opacity = "0.5";
           }

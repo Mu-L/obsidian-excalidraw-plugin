@@ -471,11 +471,11 @@ export const DEFAULT_SETTINGS: ExcalidrawSettings = {
       LinkClickAction: {
         defaultAction: "new-tab",
         rules: [
-          { shift: false, ctrl_cmd: false, alt_opt: false, meta_ctrl: false, result: "active-pane" },
-          { shift: false, ctrl_cmd: true , alt_opt: false, meta_ctrl: false, result: "new-tab" },
-          { shift: false, ctrl_cmd: true , alt_opt: true , meta_ctrl: false, result: "new-pane" },
-          { shift: true , ctrl_cmd: true , alt_opt: true , meta_ctrl: false, result: "popout-window" },
-          { shift: false, ctrl_cmd: true , alt_opt: false, meta_ctrl: true , result: "md-properties" },
+          { shift: true,  ctrl_cmd: true, alt_opt: false, meta_ctrl: false, result: "active-pane" },
+          { shift: false, ctrl_cmd: true, alt_opt: false, meta_ctrl: false, result: "new-tab" },
+          { shift: false, ctrl_cmd: true, alt_opt: true , meta_ctrl: false, result: "new-pane" },
+          { shift: true , ctrl_cmd: true, alt_opt: true , meta_ctrl: false, result: "popout-window" },
+          { shift: false, ctrl_cmd: true, alt_opt: false, meta_ctrl: true , result: "md-properties" },
         ],
       },
     },
