@@ -265,7 +265,7 @@ export const addFiles = async (
         imgBase64: f.dataURL,
         mimeType: f.mimeType,
         size: f.size,
-        isDark,
+        isDark: !!isDark,
         isSVGwithBitmap: f.hasSVGwithBitmap,
         pdfPageViewProps: f.pdfPageViewProps,
       });
@@ -288,22 +288,22 @@ let windowMigratedDisableZoomOnce = false;
 
 export default class ExcalidrawView extends TextFileView implements HoverParent{
   private dropManager: DropManager;
-  public hoverPopover: HoverPopover;
+  public hoverPopover: HoverPopover | null = null;
   private freedrawLastActiveTimestamp: number = 0;
-  public exportDialog: ExportDialog;
+  public exportDialog: ExportDialog | null = null;
   public excalidrawData: ExcalidrawData;
   //public excalidrawRef: React.MutableRefObject<any> = null;
   public excalidrawRoot: any;
   public excalidrawAPI:any = null;
-  public excalidrawWrapperRef: React.MutableRefObject<any> = null;
-  public toolsPanelRef: React.MutableRefObject<any> = null;
-  public embeddableMenuRef: React.MutableRefObject<any> = null;
-  private parentMoveObserver: MutationObserver | CustomMutationObserver;
+  public excalidrawWrapperRef: React.MutableRefObject<any> | null = null;
+  public toolsPanelRef: React.MutableRefObject<any> | null = null;
+  public embeddableMenuRef: React.MutableRefObject<any> | null = null;
+  private parentMoveObserver: MutationObserver | CustomMutationObserver | null = null;
   public linksAlwaysOpenInANewPane: boolean = false; //override the need for SHIFT+CTRL+click (used by ExcaliBrain)
   public allowFrameButtonsInViewMode: boolean = false;  //override for ExcaliBrain
-  private _hookServer: ExcalidrawAutomate;
+  private _hookServer: ExcalidrawAutomate | null = null;
   public lastSaveTimestamp: number = 0; //used to validate if incoming file should sync with open file
-  private lastLoadedFile: TFile = null;
+  private lastLoadedFile: TFile | null = null;
   //store key state for view mode link resolution
   private modifierKeyDown: ModifierKeys = {shiftKey:false, metaKey: false, ctrlKey: false, altKey: false}
   public currentPosition: Position = { x: 0, y: 0 }; //these are scene coord thus would be more apt to call them sceneX and sceneY, however due to scrits already using x and y, I will keep it as is
@@ -337,36 +337,36 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
   public textMode: TextMode = TextMode.raw;
   private actionButtons: Record<ActionButtons, HTMLElement> = {} as Record<ActionButtons, HTMLElement>;
   public compatibilityMode: boolean = false;
-  private obsidianMenu: ObsidianMenu;
-  private embeddableMenu: EmbeddableMenu;
+  private obsidianMenu: ObsidianMenu | null = null;
+  private embeddableMenu: EmbeddableMenu | null = null;
   private destroyers: Function[] = [];
   private previousContentElHeight: number = 0;
-  private resizeBatchTimer: number = null;
+  private resizeBatchTimer: number | null = null;
   private resizeBatchWindowStart: number = 0;
   private lastAggregatedDh = 0;
   private oldKeyboardScroll:{scrollY:number, scrollX:number}|null = null;
 
   //https://stackoverflow.com/questions/27132796/is-there-any-javascript-event-fired-when-the-on-screen-keyboard-on-mobile-safari
-  private isEditingTextResetTimer: number = null;
-  private preventReloadResetTimer: number = null;
-  private editingSelfResetTimer: number = null;
-  private colorChangeTimer:number = null;
+  private isEditingTextResetTimer: number | null = null;
+  private preventReloadResetTimer: number | null = null;
+  private editingSelfResetTimer: number | null = null;
+  private colorChangeTimer:number | null = null;
   private previousSceneVersion = 0;
   public previousBackgroundColor = "";
   public previousTheme = "";
 
   //variables used to handle click events in view mode
-  private selectedTextElement: SelectedElementWithLink = null;
-  private selectedImageElement: SelectedImage = null;
-  private selectedElementWithLink: SelectedElementWithLink = null;
+  private selectedTextElement: SelectedElementWithLink | null = null;
+  private selectedImageElement: SelectedImage | null = null;
+  private selectedElementWithLink: SelectedElementWithLink | null = null;
   private blockOnMouseButtonDown = false;
   private doubleClickTimestamp = Date.now();
 
   private hoverPoint = { x: 0, y: 0 };
-  private hoverPreviewTarget: EventTarget = null;
+  private hoverPreviewTarget: EventTarget | null = null;
   private viewModeEnabled:boolean = false;
   private lastMouseEvent: any = null;
-  private editingTextElementId: string = null; //storing to handle on-screen keyboard hide events
+  private editingTextElementId: string | null = null; //storing to handle on-screen keyboard hide events
 /*  private lastSceneSnapshot: any = null;
   private lastViewDataSnapshot: any = null;*/
 
@@ -382,7 +382,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     this.dropManager = new DropManager(this);
   }
 
-  get hookServer (): ExcalidrawAutomate {
+  get hookServer (): ExcalidrawAutomate | null {
     return this._hookServer;
   }
   get plugin(): ExcalidrawPlugin {
@@ -394,7 +394,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
   get ownerDocument(): Document {
     return DEVICE.isMobile?document:this.containerEl.ownerDocument;
   }
-  get ownerWindow(): Window {
+  get ownerWindow(): Window | null {
     return this.ownerDocument.defaultView;
   }
 
@@ -417,7 +417,9 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
 
   preventAutozoom() {
     (process.env.NODE_ENV === 'development') && DEBUGGING && debug(this.preventAutozoom, "ExcalidrawView.preventAutozoom");
-    this.semaphores.preventAutozoom = true;
+    if (!!this.semaphores) {
+      this.semaphores.preventAutozoom = true;
+    }
     window.setTimeout(() => {
       if(!this.semaphores) return;
       this.semaphores.preventAutozoom = false;
@@ -432,7 +434,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
       }
       scene = this.getScene();
     }
-    const filepath = `${this.file.path.substring(
+    const filepath = `${this.file?.path.substring(
       0,
       this.file.path.lastIndexOf(".md"),
     )}.excalidraw`;
@@ -456,7 +458,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
           return;
         }
         filename = `${filename}.excalidraw`;
-        const folderpath = splitFolderAndFilename(this.file.path).folderpath;
+        const folderpath = splitFolderAndFilename(this.file?.path).folderpath;
         await checkAndCreateFolder(folderpath); //create folder if it does not exist
         const path = getNewUniqueFilepath(
           this.app.vault,
@@ -482,6 +484,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
 
   public getViewExportTheme(theme?:string):string {
     if(theme) return theme;
+    if(!this.file) return this.excalidrawAPI.getAppState().theme;
     if(!this.exportDialog) {
       this.exportDialog = new ExportDialog(this.plugin, this,this.file);
     }
@@ -490,6 +493,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
   }
 
   public getViewExportEmbedScene(embedScene?:boolean):boolean {
+    if(!this.file) return false;
     if(!this.exportDialog) {
       this.exportDialog = new ExportDialog(this.plugin, this,this.file);
     }
@@ -501,6 +505,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
 
   public getViewExportPadding(padding?: number): number {
     if(typeof padding !== "undefined") return padding;
+    if(!this.file) return 0;
     if(!this.exportDialog) {
       this.exportDialog = new ExportDialog(this.plugin, this,this.file);
     }
@@ -510,6 +515,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
 
   public getViewExportScale(scale?: number): number {
     if(typeof scale !== "undefined") return scale;
+    if(!this.file) return 1;
     if(!this.exportDialog) {
       this.exportDialog = new ExportDialog(this.plugin, this,this.file);
     }
@@ -518,7 +524,9 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
   }
 
   public getViewExportWithBackground(withBackground?:boolean) {
-    if(typeof withBackground !== "undefined") return withBackground;
+    if(typeof withBackground !== "undefined" || !this.file) {
+      return withBackground;
+    }
     if(!this.exportDialog) {
       this.exportDialog = new ExportDialog(this.plugin, this,this.file);
     }
@@ -527,7 +535,9 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
   }
 
   public getViewExportIncludeInternalLinks(includeInternalLinks?:boolean) {
-    if(typeof includeInternalLinks !== "undefined") return includeInternalLinks;
+    if(typeof includeInternalLinks !== "undefined" || !this.file) {
+      return includeInternalLinks;
+    }
     if(!this.exportDialog) {
       this.exportDialog = new ExportDialog(this.plugin, this,this.file);
     }
@@ -576,7 +586,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     (process.env.NODE_ENV === 'development') && DEBUGGING && debug(this.svg, "ExcalidrawView.svg", scene, theme, embedScene);
 
     const exportSettings: ExportSettings = {
-      withBackground: this.getViewExportWithBackground(),
+      withBackground: !!this.getViewExportWithBackground(),
       withTheme: true,
       isMask: isMaskFile(this.plugin, this.file),
       skipInliningFonts: !embedFont,
@@ -607,6 +617,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     if(!data) {
       data = {};
     }
+    if (!this.file) return;
     let { scene, embedScene, autoexportConfig } = data;
     (process.env.NODE_ENV === 'development') && DEBUGGING && debug(this.saveSVG, "ExcalidrawView.saveSVG", scene, embedScene);
     if (!scene) {
@@ -642,6 +653,9 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     }
 
     const scene = this.getScene(selectedOnly);
+    if(!scene) {
+      return;
+    }
     if(!this.getViewExportIncludeInternalLinks()) {
       scene.elements = sceneRemoveInternalLinks(scene);
     }
@@ -655,12 +669,12 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
   public async getSVG(embedScene?: boolean, selectedOnly?: boolean):Promise<SVGSVGElement> {
     (process.env.NODE_ENV === 'development') && DEBUGGING && debug(this.getSVG, "ExcalidrawView.getSVG", embedScene, selectedOnly);
     if (!this.excalidrawAPI || !this.file) {
-      return;
+      return new SVGSVGElement();
     }
 
     const svg = await this.svg(this.getScene(selectedOnly),undefined,embedScene, true);
     if (!svg) {
-      return;
+      return new SVGSVGElement();
     }
     return svg;
   }
@@ -675,6 +689,9 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     }
   
     const scene = this.getScene(selectedOnly);
+    if (!scene) {
+      return;
+    }
     if(!this.getViewExportIncludeInternalLinks()) {
       scene.elements = sceneRemoveInternalLinks(scene);
     }
@@ -691,22 +708,22 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     }
 
     const boundingBox = this.plugin.ea.getBoundingBox(scene.elements);
-    const margin = getMarginValue(this.exportDialog.margin);
+    const margin = getMarginValue(this.exportDialog?.margin ?? "normal");
     const [width, height] = [boundingBox.width, boundingBox.height];
 
     exportToPDF({
       SVG: [svg],
       scale: {
-        zoom: this.exportDialog.scale,
+        zoom: this.exportDialog?.scale ?? 1,
         fitToPage: pageSize === "MATCH IMAGE" || pageSize === "HD Screen"
           ? 1
-          : this.exportDialog.fitToPage
+          : (this.exportDialog?.fitToPage ?? 1)
       },
       pageProps: {
         dimensions: getPageDimensions(pageSize, orientation, {width, height}),
-        backgroundColor: this.exportDialog.getPaperColor(),
+        backgroundColor: this.exportDialog?.getPaperColor() ?? "#FFFFFF",
         margin,
-        alignment: this.exportDialog.alignment,
+        alignment: this.exportDialog?.alignment ?? "center",
       },
       filename: this.file.basename+".pdf",
     });
@@ -716,7 +733,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     (process.env.NODE_ENV === 'development') && DEBUGGING && debug(this.png, "ExcalidrawView.png", scene, theme, embedScene);
 
     const exportSettings: ExportSettings = {
-      withBackground: this.getViewExportWithBackground(),
+      withBackground: !!this.getViewExportWithBackground(),
       withTheme: true,
       isMask: isMaskFile(this.plugin, this.file),
     };
@@ -746,6 +763,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     if(!data) {
       data = {};
     }
+    if (!this.file) return;
     let { scene, embedScene, autoexportConfig } = data;
     (process.env.NODE_ENV === 'development') && DEBUGGING && debug(this.savePNG, "ExcalidrawView.savePNG", scene, embedScene);
     if (!scene) {
@@ -4252,8 +4270,22 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
     //Timeout is required for Excalidraw to first complete the selection action before execution
     //of the link click continues
     window.setTimeout(()=>{ 
-      if (!this.isLinkSelected()) return;
-      this.handleLinkClick(e);
+      if (this.isLinkSelected()) {
+        this.handleLinkClick(e);
+        return;
+      }
+      // When CTRL+ALT (or CMD+OPT on Mac) is pressed, Excalidraw switches to lasso select
+      // mode instead of selecting the element under the pointer, so isLinkSelected() returns
+      // false. Fall back to checking the element at the current pointer position.
+      if (isWinCTRLorMacCMD(e) && isWinALTorMacOPT(e)) {
+        const selectedText = getTextElementAtPointer(this.currentPosition, this);
+        const selectedImage = selectedText?.id ? null : getImageElementAtPointer(this.currentPosition, this);
+        const selectedElementWithLink = (selectedText?.id || selectedImage?.id) ? null : getElementWithLinkAtPointer(this.currentPosition, this);
+        if (selectedText?.id || selectedImage?.id || selectedElementWithLink?.id) {
+          this.removeLinkTooltip();
+          this.linkClick(e, selectedText, selectedImage, selectedElementWithLink);
+        }
+      }
     });
   }
 

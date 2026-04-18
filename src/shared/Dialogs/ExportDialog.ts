@@ -25,7 +25,7 @@ export class ExportDialog extends Modal {
   public exportInternalLinks: boolean = true;
   public saveSettings: boolean;
   public dirty: boolean = false;
-  private selectedOnlySetting: Setting;
+  private selectedOnlySetting: Setting | null = null;
   private hasSelectedElements: boolean = false;
   private boundingBox: {
     topX: number;
@@ -39,15 +39,15 @@ export class ExportDialog extends Modal {
   public pageSize: PageSize = "A4";
   public pageOrientation: PageOrientation = "portrait";
   private activeTab: "image" | "pdf" | "screenshot" = "image";
-  private contentContainer: HTMLDivElement;
-  private buttonContainerRow1: HTMLDivElement;
-  private buttonContainerRow2: HTMLDivElement;
+  private contentContainer: HTMLDivElement | null = null;
+  private buttonContainerRow1: HTMLDivElement | null = null;
+  private buttonContainerRow2: HTMLDivElement | null = null;
   public fitToPage: number = 1;
   public paperColor: "white" | "scene" | "custom" = "white";
   public customPaperColor: string = "#ffffff";
   public alignment: PDFPageAlignment = "center";
   public margin: PDFPageMarginString = "normal";
-  private scaleSetting:Setting;
+  private scaleSetting:Setting | null = null;
 
   constructor(
     private plugin: ExcalidrawPlugin,

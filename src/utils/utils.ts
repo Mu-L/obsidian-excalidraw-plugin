@@ -690,7 +690,7 @@ export function decompress (data: string, isAsync:boolean = false): string {
 
 export function isMaskFile (
   plugin: ExcalidrawPlugin,
-  file: TFile,
+  file: TFile | null,
 ): boolean {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
@@ -707,7 +707,7 @@ export function isMaskFile (
 
 export function hasExportTheme (
   plugin: ExcalidrawPlugin,
-  file: TFile,
+  file: TFile | null,
 ): boolean {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
@@ -724,7 +724,7 @@ export function hasExportTheme (
 
 export function getExportTheme (
   plugin: ExcalidrawPlugin,
-  file: TFile,
+  file: TFile | null,
   theme: string,
 ): string {
   if (file) {
@@ -744,7 +744,7 @@ export function getExportTheme (
 
 export function shouldEmbedScene (
   plugin: ExcalidrawPlugin,
-  file: TFile
+  file: TFile | null
 ): boolean {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
@@ -761,7 +761,7 @@ export function shouldEmbedScene (
 
 export function hasExportBackground (
   plugin: ExcalidrawPlugin,
-  file: TFile,
+  file: TFile | null,
 ): boolean {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
@@ -778,7 +778,7 @@ export function hasExportBackground (
 
 export function getWithBackground (
   plugin: ExcalidrawPlugin,
-  file: TFile,
+  file: TFile | null,
 ): boolean {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
@@ -795,7 +795,7 @@ export function getWithBackground (
 
 export function getExportInternalLinks(
   plugin: ExcalidrawPlugin,
-  file: TFile,
+  file: TFile | null,
 ): boolean {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
@@ -812,7 +812,7 @@ export function getExportInternalLinks(
 
 export function getExportPadding (
   plugin: ExcalidrawPlugin,
-  file: TFile,
+  file: TFile | null,
 ): number {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
@@ -847,7 +847,7 @@ export function getExportPadding (
   return plugin.settings.exportPaddingSVG;
 };
 
-export function getPNGScale (plugin: ExcalidrawPlugin, file: TFile): number {
+export function getPNGScale (plugin: ExcalidrawPlugin, file: TFile | null): number {
   if (file) {
     const fileCache = plugin.app.metadataCache.getFileCache(file);
     if (

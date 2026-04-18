@@ -7,7 +7,7 @@ export type ConnectionPoint = "top" | "bottom" | "left" | "right" | null;
 export type Packages = {
   react: any,
   reactDOM: any,
-  excalidrawLib: typeof ExcalidrawLib,
+  excalidrawLib: typeof ExcalidrawLib | null,
 }
 
 export type ValueOf<T> = T[keyof T];

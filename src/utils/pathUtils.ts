@@ -1,12 +1,20 @@
 import { normalizePath, type App } from "obsidian";
 import { REG_BLOCK_REF_CLEAN, REG_SECTION_REF_CLEAN } from "src/constants/constants";
 
-export function splitFolderAndFilename(filepath: string): {
+export function splitFolderAndFilename(filepath: string | undefined): {
   folderpath: string;
   filename: string;
   basename: string;
   extension: string;
 } {
+  if (!filepath) {
+    return {
+      folderpath: "",
+      filename: "",
+      basename: "",
+      extension: "",
+    };
+  }
   const lastIndex = filepath.lastIndexOf("/");
   const filename = lastIndex === -1 ? filepath : filepath.substring(lastIndex + 1);
   const lastDotIndex = filename.lastIndexOf(".");

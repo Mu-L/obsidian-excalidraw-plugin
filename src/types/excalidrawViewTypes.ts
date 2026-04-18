@@ -51,7 +51,7 @@ export interface ViewSemaphores {
 
   autosaving: boolean; //flags that autosaving is in progress. Autosave is an async timer, the flag prevents collision with force save
   forceSaving: boolean; //flags that forcesaving is in progress. The flag prevents collision with autosaving
-  dirty: string; //null if there are no changes to be saved, the path of the file if the drawing has unsaved changes
+  dirty: string | null; //null if there are no changes to be saved, the path of the file if the drawing has unsaved changes
 
   //reload() is triggered by modifyEventHandler in main.ts. preventReload is a one time flag to abort reloading
   //to avoid interrupting the flow of drawing by the user.
@@ -66,6 +66,6 @@ export interface ViewSemaphores {
   //This semaphore helps avoid collision of saves
   saving: boolean;
   hoverSleep: boolean; //flag with timer to prevent hover preview from being triggered dozens of times
-  wheelTimeout:number; //used to avoid hover preview while zooming
+  wheelTimeout:number | null; //used to avoid hover preview while zooming
   shouldSaveImportedImage: boolean; //forceSave after image import via the Excalidraw Image Tool or by way of paste
 }
