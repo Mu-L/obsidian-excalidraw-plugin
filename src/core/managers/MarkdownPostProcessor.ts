@@ -243,7 +243,8 @@ const _getSVGIMG = async ({filenameParts,theme,cacheReady,img,file,exportSetting
   }
 
   //need to remove width and height attributes to support area= embeds
-  svg.removeAttribute("width");
+  //svg.removeAttribute("width");
+  svg.setAttribute("width", "6000");
   svg.removeAttribute("height");
   return addSVGToImgSrc(img, svg, cacheReady, cacheKey);
 }
@@ -392,7 +393,7 @@ const getIMG = async (
         exportSettings,
         loader,
         width: imgAttributes.fwidth
-         ? (!imgAttributes.fwidth.endsWith("%") ? parseInt(imgAttributes.fwidth) : 1000)
+         ? (!imgAttributes.fwidth.endsWith("%") ? parseInt(imgAttributes.fwidth) : 6000)
          : undefined,
       });
     }

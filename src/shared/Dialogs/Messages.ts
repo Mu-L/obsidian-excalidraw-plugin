@@ -38,6 +38,7 @@ I build this plugin in my free time, as a labor of love. Curious about the philo
 - Link click behavior modifier keys setting in plugin settings now enforces CTRL/CMD for link clicks and improves on clarity of setting UI by adding a header row
 - Link click conbinations that included ALT/OPT did not work because they trigger lasso selection in Excalidraw. This is now fixed, if you CTRL+ALT click a link it will navigate while retaining the lasso select feature when pressing ALT/OPT.
 - Copying an image block embed (e.g. \`![[drawing#^frame=my_frame]]\`) from the excalidraw scene and pasting it to markdown no longer loses the frame reference
+- Embed "SVG Image" to markdown should size correctly now when setting a percentage \`![[drawing|50%]]\` where 50% is relative to the width of the markdown note.
 
 `,
 "2.21.2":`
