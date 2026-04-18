@@ -142,11 +142,14 @@ export class EventManager {
         if (element.type === "image") {
           const fileinfo = this.plugin.filesMaster.get(element.fileId);
           if(fileinfo && fileinfo.path) {
-            let path = fileinfo.path;
+            let path = fileinfo.path.split("|")[0]; // strip size anchoring (e.g. |100%)
             const sourceFile = info.file;
             const imageFile = this.app.vault.getAbstractFileByPath(path);
             if(sourceFile && imageFile && imageFile instanceof TFile) {
               path = this.app.metadataCache.fileToLinktext(imageFile,sourceFile.path);
+            }
+            if (fileinfo.blockrefData) {
+              path = `${path}#${fileinfo.blockrefData.split("|")[0]}`; // strip size anchoring (e.g. |100%)
             }
             editorInsertText(editor, getLink(this.plugin, {path}));
           }

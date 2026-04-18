@@ -32,6 +32,14 @@ I build this plugin in my free time, as a labor of love. Curious about the philo
 ## New
 - Added support for embedding the [Sheet Plus](obsidian://show-plugin?id=sheet-plus) plugin as an active embeddable element in Excalidraw. At the moment, changing the canvas theme between dark and light mode does not automatically re-render embedded sheets. To apply the theme change, close and reopen the drawing. This will likely be improved in a future update.
 `,
+"2.21.3":`
+## Fixed
+- Caret color for link editor, text elemnts in dark mode, color picker input element.
+- Link click behavior modifier keys setting in plugin settings now enforces CTRL/CMD for link clicks and improves on clarity of setting UI by adding a header row
+- Link click conbinations that included ALT/OPT did not work because they trigger lasso selection in Excalidraw. This is now fixed, if you CTRL+ALT click a link it will navigate while retaining the lasso select feature when pressing ALT/OPT.
+- Copying an image block embed (e.g. \`![[drawing#^frame=my_frame]]\`) from the excalidraw scene and pasting it to markdown no longer loses the frame reference
+
+`,
 "2.21.2":`
 ## Fixed
 - The new ExcalidrawAutomate function \`parseText()\` broke if the text was a transcluded image or PDF document, causing downstream paste issues in MindMap Builder.
