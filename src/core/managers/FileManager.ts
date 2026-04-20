@@ -412,6 +412,11 @@ export class PluginFileManager {
     if (!this.isExcalidrawFile(file)) {
       return;
     }
+
+    if (this.app.workspace.activeLeaf?.view instanceof ExcalidrawView && this.app.workspace.activeLeaf.view.file === file) {
+      this.plugin.lastActiveExcalidrawFilePath = file.path;
+    }
+
     this.moveBAKFile(oldPath, file.path);
     
     if (!this.settings.keepInSync) {

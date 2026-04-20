@@ -795,7 +795,12 @@ root {
 
 /*
 textarea.excalidraw-wysiwyg,*/
-input {
+.excalidraw input,
+.excalidraw .ttd-dialog-content textarea {
+  caret-color: var(--excalidraw-caret-color) !important;
+}
+
+.excalidraw textarea.ttd-dialog-input {
   caret-color: var(--excalidraw-caret-color) !important;
 }
 
@@ -847,10 +852,6 @@ input {
 
 .excalidraw textarea::placeholder {
   color: var(--color-gray-50);
-}
-
-.excalidraw textarea.ttd-dialog-input {
-  caret-color: var(--excalidraw-caret-color) !important;
 }
 
 .excalidraw .ToolIcon_type_button {
