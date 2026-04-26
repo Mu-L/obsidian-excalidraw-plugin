@@ -427,6 +427,8 @@ export default {
   DEFAULT_OPEN_MODE_DESC:
     "设置 Excalidraw 的运行模式：普通模式（Normal）/禅模式（Zen）/查看模式（View）。<br>" +
     "可为某个绘图单独设置，方法是在其 frontmatter 中添加如 <code>excalidraw-default-mode: normal/zen/view</code> 的键值对。",
+  PHONE_FOOTER_SAFE_AREA_PADDING_NAME: "为手机端底部控件增加额外留白",
+  PHONE_FOOTER_SAFE_AREA_PADDING_DESC: "为 Excalidraw 底部控件增加额外底部留白，让缩放和撤销按钮在手机上保持位于系统导航栏之上。该设置仅在手机上生效。",
   DEFAULT_PEN_MODE_NAME: "触控笔模式（Pen mode）",
   DEFAULT_PEN_MODE_DESC:
     "打开绘图时，是否自动开启触控笔模式？",

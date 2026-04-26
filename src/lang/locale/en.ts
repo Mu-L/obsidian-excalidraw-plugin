@@ -427,6 +427,8 @@ export default {
   DEFAULT_OPEN_MODE_DESC:
     "Specifies the mode how Excalidraw opens: Normal, Zen, or View mode. You may also set this behavior on a file level by " +
     "adding the excalidraw-default-mode frontmatter key with a value of: normal, view, or zen to your document.",
+  PHONE_FOOTER_SAFE_AREA_PADDING_NAME: "Extra bottom padding for phone controls",
+  PHONE_FOOTER_SAFE_AREA_PADDING_DESC: "Adds extra bottom padding to the Excalidraw footer controls so zoom and undo buttons stay above the system navigation bar on phones. This setting only applies on phones.",
   DEFAULT_PEN_MODE_NAME: "Pen mode",
   DEFAULT_PEN_MODE_DESC:
     "Should pen mode be automatically enabled when opening Excalidraw?",
