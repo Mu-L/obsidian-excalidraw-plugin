@@ -22,9 +22,11 @@ I build this plugin in my free time, as a labor of love. Curious about the philo
 - Added a command palette action to switch all currently open Excalidraw drawings to view mode.
   - While this temporary mode is enabled, any Excalidraw drawing opened afterward will also open in view mode.
   - This is useful when presenting multiple drawings and you want to avoid accidentally moving elements, and when you don't want the tools to be in the way.
+- Added an optional phone-only layout setting to push Excalidraw's footer controls above the system navigation bar on some Android devices [#2688](https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/2688), [#2652](https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/2652), [#798](https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/798)
+  - Look for ""Extra bottom padding for phone controls" in the plugin settings.
 
 ## Fixed
-- invisible cursor color in color picker, mermaid chat, in text elements in dark mode
+- invisible cursor color in color picker, mermaid chat, in text elements in dark mode [#2739](https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/2739)
 - image sizing issue when embedding image type "SVG Image" to markdown
 - copying a nested image fragment in Excalidraw and pasting to markdown lost the image block reference
 - modifier keys conflicted with Excalidraw alt-select (lasso) behavior

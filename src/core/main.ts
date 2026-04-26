@@ -111,6 +111,13 @@ type FileMasterInfo = {
   colorMapJSON?: string
 }
 
+const PHONE_FOOTER_SAFE_AREA_STYLE_ID = "excalidraw-phone-footer-safe-area";
+const PHONE_FOOTER_SAFE_AREA_CSS = `
+.excalidraw .App-bottom-bar {
+  padding-bottom: 50px;
+}
+`;
+
 export default class ExcalidrawPlugin extends Plugin {
   private fileManager: PluginFileManager;
   private observerManager: ObserverManager;
@@ -402,6 +409,8 @@ export default class ExcalidrawPlugin extends Plugin {
     }
     this.logStartupEvent("Styles manager initialized");
 
+    this.updatePhoneFooterSafeAreaPadding();
+
     try {
       this.scriptEngine = new ScriptEngine(this);
     } catch (e) {
@@ -615,6 +624,41 @@ export default class ExcalidrawPlugin extends Plugin {
       const oldCJKFontStylesheet = ownerDocument.getElementById(CJK_STYLE_ID);
       if (oldCJKFontStylesheet) {
         ownerDocument.head.removeChild(oldCJKFontStylesheet);
+      }
+    });
+  }
+
+  public updatePhoneFooterSafeAreaPadding() {
+    const documents = new Set<Document>([document, ...this.getOpenObsidianDocuments()]);
+    const shouldEnable = DEVICE.isPhone && this.settings?.phoneFooterSafeAreaPadding;
+
+    documents.forEach((ownerDocument) => {
+      const existingStylesheet = ownerDocument.getElementById(PHONE_FOOTER_SAFE_AREA_STYLE_ID);
+      if (!shouldEnable) {
+        if (existingStylesheet) {
+          ownerDocument.head.removeChild(existingStylesheet);
+        }
+        return;
+      }
+
+      if (existingStylesheet instanceof HTMLStyleElement) {
+        existingStylesheet.textContent = PHONE_FOOTER_SAFE_AREA_CSS;
+        return;
+      }
+
+      const stylesheet = ownerDocument.createElement("style");
+      stylesheet.id = PHONE_FOOTER_SAFE_AREA_STYLE_ID;
+      stylesheet.textContent = PHONE_FOOTER_SAFE_AREA_CSS;
+      ownerDocument.head.appendChild(stylesheet);
+    });
+  }
+
+  private removePhoneFooterSafeAreaPadding() {
+    const documents = new Set<Document>([document, ...this.getOpenObsidianDocuments()]);
+    documents.forEach((ownerDocument) => {
+      const existingStylesheet = ownerDocument.getElementById(PHONE_FOOTER_SAFE_AREA_STYLE_ID);
+      if (existingStylesheet) {
+        ownerDocument.head.removeChild(existingStylesheet);
       }
     });
   }
@@ -1210,6 +1254,7 @@ export default class ExcalidrawPlugin extends Plugin {
     this.stylesManager = null;
 
     this.removeFonts();
+  this.removePhoneFooterSafeAreaPadding();
 
     this.eaInstances.forEach((ea) => ea?.destroy());
     this.eaInstances.clear();

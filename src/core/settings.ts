@@ -51,6 +51,7 @@ export interface ExcalidrawSettings {
   copyLinkToElemenetAnchorTo100: boolean;
   copyFrameLinkByName: boolean;
   disableDoubleClickTextEditing: boolean;
+  phoneFooterSafeAreaPadding: boolean;
   folder: string;
   cropFolder: string;
   annotateFolder: string;
@@ -243,6 +244,7 @@ export const DEFAULT_SETTINGS: ExcalidrawSettings = {
   copyLinkToElemenetAnchorTo100: false,
   copyFrameLinkByName: false,
   disableDoubleClickTextEditing: false,
+  phoneFooterSafeAreaPadding: false,
   folder: "Excalidraw",
   cropFolder: "",
   annotateFolder: "",
@@ -1420,6 +1422,19 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.defaultMode)
           .onChange(async (value) => {
             this.plugin.settings.defaultMode = value;
+            this.applySettingsUpdate();
+          }),
+      );
+
+    new Setting(detailsEl)
+      .setName(t("PHONE_FOOTER_SAFE_AREA_PADDING_NAME"))
+      .setDesc(fragWithHTML(t("PHONE_FOOTER_SAFE_AREA_PADDING_DESC")))
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.phoneFooterSafeAreaPadding)
+          .onChange(async (value) => {
+            this.plugin.settings.phoneFooterSafeAreaPadding = value;
+            this.plugin.updatePhoneFooterSafeAreaPadding();
             this.applySettingsUpdate();
           }),
       );
