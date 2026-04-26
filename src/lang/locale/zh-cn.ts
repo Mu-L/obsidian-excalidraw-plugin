@@ -110,6 +110,7 @@ export default {
   RESET_IMG_ASPECT_RATIO: "重置所选图像的纵横比",
   TEMPORARY_DISABLE_AUTOSAVE: "临时禁用自动保存功能，直到本次 Obsidian 退出（小白慎用！）",
   TEMPORARY_ENABLE_AUTOSAVE: "启用自动保存功能",
+  TEMPORARY_TOGGLE_VIEW_MODE_FOR_ALL_DRAWINGS: "切换所有 Excalidraw 绘图的查看模式，直到本次 Obsidian 退出",
   FONTS_LOADED: "Excalidraw: CJK 字体已加载",
   FONTS_LOAD_ERROR: "Excalidraw: 在资源文件夹下找不到 CJK 字体\n",
   TOGGLE_ENABLE_CONTEXT_MENU: "切换是否启用上下文菜单（在移动设备上很有用）",

@@ -2640,7 +2640,7 @@ export class ExcalidrawAutomate {
           return;
         }
         view = getLastActiveExcalidrawView(this.plugin);
-        this.targetView = view ?? getExcalidrawViews(this.plugin.app)[0];
+        this.targetView = view ?? getExcalidrawViews(this.plugin.app, true)[0];
         return;
       }
       if (view == "active") {
@@ -2653,7 +2653,7 @@ export class ExcalidrawAutomate {
         return;
       }
       if (view == "first") {
-        this.targetView = getExcalidrawViews(this.plugin.app)[0];
+        this.targetView = getExcalidrawViews(this.plugin.app, true)[0];
         return;
       }
       if (view instanceof ExcalidrawView) {

@@ -67,7 +67,7 @@ export class PenSettingsModal extends Modal {
   async onClose() {
     if(this.dirty) {
       await this.plugin.saveSettings();
-      getExcalidrawViews(this.app).forEach(excalidrawView=>excalidrawView.updatePinnedCustomPens());
+      getExcalidrawViews(this.app, true).forEach(excalidrawView=>excalidrawView.updatePinnedCustomPens());
       const pen = this.plugin.settings.customPens[this.pen]
       const api = this.view.excalidrawAPI;
       setPen(pen,api);

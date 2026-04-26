@@ -120,7 +120,7 @@ export class EventManager {
 
   private onLayoutChangeHandler() {
     if (this.app.workspace.layoutReady) {
-      getExcalidrawViews(this.app).forEach(excalidrawView=>!!excalidrawView?.refresh && excalidrawView.refresh());
+      getExcalidrawViews(this.app, true).forEach(excalidrawView=>!!excalidrawView?.refresh && excalidrawView.refresh());
     }
   }
 

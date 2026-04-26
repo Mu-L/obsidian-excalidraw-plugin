@@ -153,6 +153,7 @@ export default class ExcalidrawPlugin extends Plugin {
   public wasPenModeActivePreviously: boolean = false;
   public popScope: Function = null;
   public lastPDFLeafID: string = null;
+  public forceExcalidrawViewMode: boolean = false;
 
   constructor(app: App, manifest: PluginManifest) {
     super(app, manifest);

@@ -436,7 +436,7 @@ export class ToolsPanel extends React.Component<PanelProps, PanelState> {
       api?.setToast({message:`Pinned: ${scriptName}`, duration: 3000, closable: true})
     }
     await plugin.saveSettings();
-    getExcalidrawViews(plugin.app).forEach(excalidrawView=>excalidrawView.updatePinnedScripts());
+    getExcalidrawViews(plugin.app, true).forEach(excalidrawView=>excalidrawView.updatePinnedScripts());
   }
 
   private islandOnClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {

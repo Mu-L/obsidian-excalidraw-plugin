@@ -15,6 +15,7 @@ import {
   ICON_NAME,
   IMAGE_TYPES,
   DEVICE,
+  CaptureUpdateAction,
   sceneCoordsToViewportCoords,
   fileid,
 } from "../../constants/constants";
@@ -52,7 +53,7 @@ import {
   decompress,
   getImageSize,
 } from "../../utils/utils";
-import { extractSVGPNGFileName, getActivePDFPageNumberFromPDFView, isObsidianThemeDark, mergeMarkdownFiles, setExcalidrawView } from "../../utils/obsidianUtils";
+import { extractSVGPNGFileName, getActivePDFPageNumberFromPDFView, getExcalidrawViews, isObsidianThemeDark, mergeMarkdownFiles, setExcalidrawView } from "../../utils/obsidianUtils";
 import { getAttachmentsFolderAndFilePath } from "../../utils/pathUtils";
 import { ExcalidrawElement, ExcalidrawEmbeddableElement, ExcalidrawImageElement, ExcalidrawTextElement, FileId } from "@zsviczian/excalidraw/types/element/src/types";
 import { ReleaseNotes } from "../../shared/Dialogs/ReleaseNotes";
@@ -103,6 +104,19 @@ export class CommandManager {
   constructor(plugin: ExcalidrawPlugin) {
     this.app = plugin.app;
     this.plugin = plugin;
+  }
+
+  private setAllExcalidrawViewsToViewMode(enabled: boolean) {
+    getExcalidrawViews(this.app, true).forEach((view) => {
+      view.updateScene({
+        appState: {
+          viewModeEnabled: enabled,
+          zenModeEnabled: enabled ? false : view.excalidrawAPI?.getAppState()?.zenModeEnabled,
+        },
+        captureUpdate: CaptureUpdateAction.NEVER,
+      });
+      view.toolsPanelRef?.current?.setExcalidrawViewMode(enabled);
+    });
   }
 
   public initialize() {
@@ -395,6 +409,17 @@ export class CommandManager {
         return true;
       }
     })    
+
+    this.addCommand({
+      id: "excalidraw-toggle-session-view-mode",
+      name: t("TEMPORARY_TOGGLE_VIEW_MODE_FOR_ALL_DRAWINGS"),
+      checkCallback: (checking) => {
+        if (checking) return true;
+        this.plugin.forceExcalidrawViewMode = !this.plugin.forceExcalidrawViewMode;
+        this.setAllExcalidrawViewsToViewMode(this.plugin.forceExcalidrawViewMode);
+        return true;
+      }
+    })
 
     this.addCommand({
       id: "excalidraw-download-lib",

@@ -80,9 +80,9 @@ export class ObserverManager {
 
       setTimeout(()=>{ //run async to avoid blocking the UI
         const theme = isObsidianThemeDark() ? "dark" : "light";
-        const excalidrawViews = getExcalidrawViews(this.app);
+        const excalidrawViews = getExcalidrawViews(this.app, true);
         excalidrawViews.forEach(excalidrawView => {
-          if (excalidrawView.file && excalidrawView.excalidrawAPI) {
+          if (excalidrawView.file) {
             excalidrawView.setTheme(theme);
           }
         });

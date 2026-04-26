@@ -24,9 +24,11 @@ export const getParentOfClass = (element: Element, cssClass: string):HTMLElement
   return parent?.classList?.contains(cssClass) ? parent : null;
 };
 
-export function getExcalidrawViews(app: App): ExcalidrawView[] {
+export function getExcalidrawViews(app: App, initializedOnly: boolean = false): ExcalidrawView[] {
   const leaves = app.workspace.getLeavesOfType(VIEW_TYPE_EXCALIDRAW).filter(l => l.view.getViewType?.() === VIEW_TYPE_EXCALIDRAW);
-  return leaves.map(l=>l.view as ExcalidrawView);
+  return leaves
+    .map(l=>l.view as ExcalidrawView)
+    .filter(view => !initializedOnly || Boolean(view?._loaded && view.excalidrawAPI));
 }
 
 export function getExcalidraAndMarkdowViewsForFile(app: App, file: TFile): TextFileView[] {

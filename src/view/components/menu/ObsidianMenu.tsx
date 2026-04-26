@@ -134,7 +134,7 @@ export class ObsidianMenu {
               this.view.excalidrawAPI?.setToast({message:`Pin removed: ${name}`, duration: 3000, closable: true});
             } 
             await this.plugin.saveSettings();
-            getExcalidrawViews(this.plugin.app).forEach(excalidrawView=>excalidrawView.updatePinnedScripts());
+            getExcalidrawViews(this.plugin.app, true).forEach(excalidrawView=>excalidrawView.updatePinnedScripts());
           })()
         },
         1500

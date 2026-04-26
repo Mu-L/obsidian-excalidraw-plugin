@@ -110,6 +110,7 @@ export default {
   RESET_IMG_ASPECT_RATIO: "Reset selected image element aspect ratio",
   TEMPORARY_DISABLE_AUTOSAVE: "Disable autosave until next time Obsidian starts (only set this if you know what you are doing)",
   TEMPORARY_ENABLE_AUTOSAVE: "Enable autosave",
+  TEMPORARY_TOGGLE_VIEW_MODE_FOR_ALL_DRAWINGS: "Toggle view mode for all Excalidraw drawings until Obsidian restarts",
   FONTS_LOADED: "Excalidraw: CJK Fonts loaded",
   FONTS_LOAD_ERROR: "Excalidraw: Could not find CJK Fonts in the assets folder\n",
   TOGGLE_ENABLE_CONTEXT_MENU: "Toggle enable context menu (helpful on Mobile devices)",

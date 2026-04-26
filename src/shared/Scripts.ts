@@ -346,7 +346,7 @@ export class ScriptEngine {
 }
 
   private updateToolPannels() {
-    const excalidrawViews = getExcalidrawViews(this.app);
+    const excalidrawViews = getExcalidrawViews(this.app, true);
     excalidrawViews.forEach(excalidrawView => {
       excalidrawView.toolsPanelRef?.current?.updateScriptIconMap(
         this.scriptIconMap,

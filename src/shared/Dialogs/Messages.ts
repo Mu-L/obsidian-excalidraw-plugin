@@ -17,6 +17,18 @@ I build this plugin in my free time, as a labor of love. Curious about the philo
 
 <div class="ex-coffee-div"><a href="https://ko-fi.com/zsolt"><img src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" border="0" alt="Buy Me a Coffee at ko-fi.com"  height=45></a></div>
 `,
+"2.22.1": `
+## New
+- Added a command palette action to switch all currently open Excalidraw drawings to view mode.
+  - While this temporary mode is enabled, any Excalidraw drawing opened afterward will also open in view mode.
+  - This is useful when presenting multiple drawings and you want to avoid accidentally moving elements, and when you don't want the tools to be in the way.
+
+## Fixed
+- invisible cursor color in color picker, mermaid chat, in text elements in dark mode
+- image sizing issue when embedding image type "SVG Image" to markdown
+- copying a nested image fragment in Excalidraw and pasting to markdown lost the image block reference
+- modifier keys conflicted with Excalidraw alt-select (lasso) behavior
+`,
 "2.22.0":`
 ## Fixed
 - Fixed misaligned panel buttons in tray mode [#2718](https://github.com/zsviczian/obsidian-excalidraw-plugin/issues/2718) 🙏[@heinrich26](https://github.com/heinrich26)

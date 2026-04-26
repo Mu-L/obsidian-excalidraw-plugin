@@ -585,12 +585,12 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
     }
     this.plugin.saveSettings();
     if (this.requestUpdatePinnedPens) {
-      getExcalidrawViews(this.app).forEach(excalidrawView =>
+      getExcalidrawViews(this.app, true).forEach(excalidrawView =>
         excalidrawView.updatePinnedCustomPens()
       )
     }
     if (this.requestUpdateDynamicStyling) {
-      getExcalidrawViews(this.app).forEach(excalidrawView =>
+      getExcalidrawViews(this.app, true).forEach(excalidrawView =>
           setDynamicStyle(this.plugin.ea,excalidrawView,excalidrawView.previousBackgroundColor,this.plugin.settings.dynamicStyling)
       )
     }
@@ -599,7 +599,7 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
       this.plugin.registerHotkeyOverrides();
     }
     if (this.requestReloadDrawings) {
-      const excalidrawViews = getExcalidrawViews(this.app);
+      const excalidrawViews = getExcalidrawViews(this.app, true);
       for (const excalidrawView of excalidrawViews) {
         await excalidrawView.save(false);
         //debug({where:"ExcalidrawSettings.hide",file:v.view.file.name,before:"reload(true)"})
@@ -1452,7 +1452,7 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.allowPinchZoom)
           .onChange(async (value) => {
             this.plugin.settings.allowPinchZoom = value;
-            getExcalidrawViews(this.app).forEach(excalidrawView=>excalidrawView.updatePinchZoom())
+            getExcalidrawViews(this.app, true).forEach(excalidrawView=>excalidrawView.updatePinchZoom())
             this.applySettingsUpdate();
           }),
       );
@@ -1466,7 +1466,7 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.allowWheelZoom)
           .onChange(async (value) => {
             this.plugin.settings.allowWheelZoom = value;
-            getExcalidrawViews(this.app).forEach(excalidrawView=>excalidrawView.updateWheelZoom());
+            getExcalidrawViews(this.app, true).forEach(excalidrawView=>excalidrawView.updateWheelZoom());
             this.applySettingsUpdate();
           }),
       );
@@ -1616,11 +1616,11 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
       });
 
       const updateGridColor = () => {
-        getExcalidrawViews(this.app).forEach(excalidrawView=>excalidrawView.updateGridColor());
+        getExcalidrawViews(this.app, true).forEach(excalidrawView=>excalidrawView.updateGridColor());
       };
 
       const updateGridDirection = () => {
-        getExcalidrawViews(this.app).forEach(excalidrawView=>
+        getExcalidrawViews(this.app, true).forEach(excalidrawView=>
           excalidrawView.updateGridDirection(this.plugin.settings.gridSettings.GRID_DIRECTION));
       }
       
