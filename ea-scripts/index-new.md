@@ -1,5 +1,13 @@
-If you are enjoying the Excalidraw plugin then please support my work and enthusiasm by buying me a coffee on [https://ko-fi/zsolt](https://ko-fi.com/zsolt).
+<div style="text-align:center;margin-bottom:20px;">
+<a href="https://community.sketch-your-mind.com/em" target="_blank"><img src="https://sketch-your-mind.com/images/logo-EM.png" style="width:50%; max-width: 400px;"></a>
+</div>
 
+**It looks like you want to get more out of Excalidraw!** 
+Scripts are a true superpower in Excalidraw. If you are ready to eliminate tool friction and build heavy-duty workflows, join[Excalidraw Mastery](https://community.sketch-your-mind.com/em). Master Excalidraw and Visual PKM alongside a supportive community of fellow visual thinkers in the [Sketch Your Mind Community](https://community.sketch-your-mind.com)!
+
+---
+
+If you are enjoying the Excalidraw plugin then please support my work and enthusiasm by buying me a coffee on [https://ko-fi/zsolt](https://ko-fi.com/zsolt).
 [<img src="https://user-images.githubusercontent.com/14358394/115450238-f39e8100-a21b-11eb-89d0-fa4b82cdbce8.png" class="coffee">](https://ko-fi.com/zsolt) 
 
 ---
@@ -7,11 +15,21 @@ If you are enjoying the Excalidraw plugin then please support my work and enthus
 Jump ahead to the [[#List of available scripts]]
 
 # Introducing Excalidraw Automate Script Engine
-<a href="https://www.youtube.com/watch?v=hePJcObHIso" target="_blank"><img src ="https://i.ytimg.com/vi/hePJcObHIso/maxresdefault.jpg" style="width:560px;"></a>
+<a href=" target="_blank"><img src ="https://i.ytimg.com/vi/hePJcObHIso/maxresdefault.jpg" style="width:560px;"></a>
 
 Script Engine scripts are installed in the `Downloaded` subfolder of the `Excalidraw Automate script folder` specified in plugin settings.
 
 In the `Command Palette` installed scripts are prefixed with `Downloaded/`, thus you can always know if you are executing a local script of your own, or one that you have downloaded from GitHub.
+
+## Create Your Own Scripts with AI Superpowers
+
+You don't need to know how to code to build custom scripts! In this video, I show how to create powerful, custom Excalidraw scripts from scratch using the power of AI. 
+
+Follow along as I generate a complete Layer Manager script for Excalidraw in Obsidian, allowing you to hide, show, lock, and manage elements on different layers. I'll walk you through the entire process, from using a custom training library for Excalidraw Automate to prompting Google's Gemini AI Studio to write the code for us. Discover how to unlock a true superpower for your Obsidian and Excalidraw workflow by generating any script you can imagine.
+
+<div class="excalidraw-videoWrapper">
+<a href="https://youtu.be/6BjhUyfS4iM" target="_blank"><img src="https://i.ytimg.com/vi/6BjhUyfS4iM/maxresdefault.jpg" style="width:560px;"></a>
+</div>
 
 ## Attention developers and hobby hackers
 <img src='https://raw.githubusercontent.com/zsviczian/obsidian-excalidraw-plugin/master/images/hobby-programmer.svg' align='left' style='background-color:whitesmoke; width:80px; margin-right:15px; margin-bottom:10px;'/>
@@ -20,8 +38,7 @@ If you want to modify scripts, I recommend moving them to the `Excalidraw Automa
 I would love to include your contribution in the script library. If you have a script of your own that you would like to share with the community, please open a [PR](https://github.com/zsviczian/obsidian-excalidraw-plugin/pulls) on GitHub. Be sure to include the following in your pull request
 - The [script file](https://github.com/zsviczian/obsidian-excalidraw-plugin/tree/master/ea-scripts) with a self explanetory name. The name of the file will be the name of the script in the Command Palette.
 - An [image](https://github.com/zsviczian/obsidian-excalidraw-plugin/tree/master/images) explaining the scripts purpose. Remember a picture speaks thousand words!
-- An update to this file [ea-scripts/index-new.md](https://github.com/zsviczian/obsidian-excalidraw-plugin/blob/master/ea-scripts/index-new.md)
-
+- An update to this file[ea-scripts/index-new.md](https://github.com/zsviczian/obsidian-excalidraw-plugin/blob/master/ea-scripts/index-new.md)
 ---
 
 # List of available scripts
