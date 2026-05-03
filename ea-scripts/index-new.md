@@ -1,5 +1,5 @@
 <div style="text-align:center;margin-bottom:20px;">
-<a href="https://community.sketch-your-mind.com/em" target="_blank"><img src="https://sketch-your-mind.com/images/logo-EM.png" style="width:50%; max-width: 400px;"></a>
+<a href="https://community.sketch-your-mind.com/em" target="_blank"><img src="https://sketch-your-mind.com/images/logo-EM.png" style="width:50%; max-width: 200px;"></a>
 </div>
 
 **It looks like you want to get more out of Excalidraw!** 
