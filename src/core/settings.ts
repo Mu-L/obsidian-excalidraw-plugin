@@ -10,7 +10,7 @@ import {
   TextComponent,
   TFile,
 } from "obsidian";
-import { GITHUB_RELEASES, setRootElementSize } from "src/constants/constants";
+import { GITHUB_RELEASES, LOGO_EXCALIDRAW_MASTERY, setRootElementSize } from "src/constants/constants";
 import { t } from "src/lang/helpers";
 import type ExcalidrawPlugin from "src/core/main";
 import { PenStyle } from "src/types/penTypes";
@@ -180,6 +180,7 @@ export interface ExcalidrawSettings {
   };
   previousRelease: string;
   showReleaseNotes: boolean;
+  excalidrawMasteryPromoCollapsed: boolean;
   compareManifestToPluginVersion: boolean;
   showNewVersionNotification: boolean;
   //mathjaxSourceURL: string;
@@ -374,6 +375,7 @@ export const DEFAULT_SETTINGS: ExcalidrawSettings = {
   scriptEngineSettings: {},
   previousRelease: "0.0.0",
   showReleaseNotes: true,
+  excalidrawMasteryPromoCollapsed: false,
   compareManifestToPluginVersion: true,
   showNewVersionNotification: true,
   //mathjaxSourceURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.1/es5/tex-svg.js",
@@ -552,6 +554,10 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
   private requestReloadDrawings: boolean = false;
   private requestUpdatePinnedPens: boolean = false;
   private requestUpdateDynamicStyling: boolean = false;
+  private settingsDirty: boolean = false;
+  private settingsRevision: number = 0;
+  private isPersistingSettings: boolean = false;
+  private settingsFocusoutHandler: ((event: FocusEvent) => void) | null = null;
   private hotkeyEditor: HotkeyEditor;
   //private reloadMathJax: boolean = false;
   //private applyDebounceTimer: number = 0;
@@ -561,21 +567,12 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
     this.plugin = plugin;
   }
 
-  applySettingsUpdate(requestReloadDrawings: boolean = false) {
-    if (requestReloadDrawings) {
-      this.requestReloadDrawings = true;
-    }
+  private markSettingsDirty() {
+    this.settingsDirty = true;
+    this.settingsRevision += 1;
   }
 
-  async hide() {
-    if(this.plugin.settings.overrideObsidianFontSize) {
-      document.documentElement.style.fontSize = "";
-      setRootElementSize(16);
-    } else if(!document.documentElement.style.fontSize) {
-      document.documentElement.style.fontSize = getComputedStyle(document.body).getPropertyValue("--font-text-size");
-      setRootElementSize();
-    }
-    
+  private normalizeSettingsBeforeSave() {
     this.plugin.settings.scriptFolderPath = normalizePath(
       this.plugin.settings.scriptFolderPath,
     );
@@ -585,7 +582,73 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
     ) {
       this.plugin.settings.scriptFolderPath = "Excalidraw/Scripts";
     }
-    this.plugin.saveSettings();
+  }
+
+  private async persistDirtySettings() {
+    if (!this.settingsDirty || this.isPersistingSettings) {
+      return;
+    }
+
+    this.isPersistingSettings = true;
+    try {
+      while (this.settingsDirty) {
+        const revisionToSave = this.settingsRevision;
+        this.normalizeSettingsBeforeSave();
+        await this.plugin.saveSettings();
+        if (this.settingsRevision === revisionToSave) {
+          this.settingsDirty = false;
+        }
+      }
+    } finally {
+      this.isPersistingSettings = false;
+    }
+  }
+
+  private detachSettingsFocusoutHandler() {
+    if (!this.settingsFocusoutHandler) {
+      return;
+    }
+    this.containerEl.removeEventListener("focusout", this.settingsFocusoutHandler);
+    this.settingsFocusoutHandler = null;
+  }
+
+  private attachSettingsFocusoutHandler() {
+    this.detachSettingsFocusoutHandler();
+    this.settingsFocusoutHandler = (event: FocusEvent) => {
+      window.setTimeout(() => {
+        if (!this.settingsDirty || !this.containerEl?.isConnected) {
+          return;
+        }
+
+        const nextFocusTarget = (event.relatedTarget as Node | null) ?? this.containerEl.ownerDocument.activeElement;
+        if (nextFocusTarget && this.containerEl.contains(nextFocusTarget)) {
+          return;
+        }
+
+        void this.persistDirtySettings();
+      }, 0);
+    };
+    this.containerEl.addEventListener("focusout", this.settingsFocusoutHandler);
+  }
+
+  applySettingsUpdate(requestReloadDrawings: boolean = false) {
+    this.markSettingsDirty();
+    if (requestReloadDrawings) {
+      this.requestReloadDrawings = true;
+    }
+  }
+
+  async hide() {
+    this.detachSettingsFocusoutHandler();
+    if(this.plugin.settings.overrideObsidianFontSize) {
+      document.documentElement.style.fontSize = "";
+      setRootElementSize(16);
+    } else if(!document.documentElement.style.fontSize) {
+      document.documentElement.style.fontSize = getComputedStyle(document.body).getPropertyValue("--font-text-size");
+      setRootElementSize();
+    }
+
+    await this.persistDirtySettings();
     if (this.requestUpdatePinnedPens) {
       getExcalidrawViews(this.app, true).forEach(excalidrawView =>
         excalidrawView.updatePinnedCustomPens()
@@ -622,11 +685,13 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
     let detailsEl: HTMLElement;
 
     await this.plugin.loadSettings(); //in case sync loaded changed settings in the background
+    this.settingsDirty = false;
     this.requestEmbedUpdate = false;
     this.requestReloadDrawings = false;
     const { containerEl } = this;
     containerEl.addClass("excalidraw-settings");
     this.containerEl.empty();
+    this.attachSettingsFocusoutHandler();
 
     // ------------------------------------------------
     // Search and Settings to Clipboard
@@ -647,6 +712,73 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
         }`;
       }
     );
+
+    const excalidrawMasteryPromo = containerEl.createEl("details", {
+      cls: "setting-item-description excalidraw-mastery-promo",
+    });
+    excalidrawMasteryPromo.open = !this.plugin.settings.excalidrawMasteryPromoCollapsed;
+    excalidrawMasteryPromo.classList.toggle(
+      "is-collapsed",
+      this.plugin.settings.excalidrawMasteryPromoCollapsed,
+    );
+
+    const excalidrawMasterySummary = excalidrawMasteryPromo.createEl("summary", {
+      cls: "excalidraw-mastery-promo__summary",
+    });
+    const excalidrawMasterySummaryTitle = excalidrawMasterySummary.createEl("span", {
+      cls: "excalidraw-mastery-promo__summary-title",
+      text: "Excalidraw Mastery",
+    });
+    const excalidrawMasterySummaryState = excalidrawMasterySummary.createEl("span", {
+      cls: "excalidraw-mastery-promo__summary-state",
+    });
+
+    const excalidrawMasteryLink = "https://community.sketch-your-mind.com/em";
+    const updateExcalidrawMasteryPromoState = (persist: boolean) => {
+      const isCollapsed = !excalidrawMasteryPromo.open;
+      this.plugin.settings.excalidrawMasteryPromoCollapsed = isCollapsed;
+      excalidrawMasteryPromo.classList.toggle("is-collapsed", isCollapsed);
+      excalidrawMasterySummaryTitle.classList.toggle("is-hidden", !isCollapsed);
+      excalidrawMasterySummaryState.setText(
+        isCollapsed ? t("EXCALIDRAW_MASTERY_PROMO_SHOW") : t("EXCALIDRAW_MASTERY_PROMO_HIDE"),
+      );
+      if (persist) {
+        void this.plugin.saveSettings();
+      }
+    };
+
+    excalidrawMasteryPromo.addEventListener("toggle", () => updateExcalidrawMasteryPromoState(true));
+    updateExcalidrawMasteryPromoState(false);
+
+    const excalidrawMasteryContent = excalidrawMasteryPromo.createDiv({
+      cls: "excalidraw-mastery-promo__content",
+    });
+    const excalidrawMasteryImageLink = excalidrawMasteryContent.createEl("a", {
+      cls: "excalidraw-mastery-promo__image-link",
+      href: excalidrawMasteryLink,
+      attr: {
+        "aria-label": t("EXCALIDRAW_MASTERY_PROMO_ARIA"),
+        "target": "_blank",
+        "rel": "noopener noreferrer",
+      },
+    });
+    excalidrawMasteryImageLink.createEl("img", {
+      cls: "excalidraw-mastery-promo__image",
+      attr: {
+        src: LOGO_EXCALIDRAW_MASTERY,
+        alt: "Excalidraw Mastery",
+      },
+    });
+
+    const excalidrawMasteryText = excalidrawMasteryContent.createDiv({
+      cls: "excalidraw-mastery-promo__text",
+    });
+    excalidrawMasteryText.innerHTML = t("EXCALIDRAW_MASTERY_PROMO_HTML");
+    excalidrawMasteryText.querySelectorAll("a").forEach((anchor: HTMLAnchorElement) => {
+      anchor.setAttribute("aria-label", t("EXCALIDRAW_MASTERY_PROMO_ARIA"));
+      anchor.setAttribute("target", "_blank");
+      anchor.setAttribute("rel", "noopener noreferrer");
+    });
    
 
     // ------------------------------------------------
@@ -674,7 +806,7 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
       },
       {
         icon: getIcon("globe").outerHTML,
-        href: "https://excalidraw-obsidian.online/",
+        href: "https://community.sketch-your-mind.com/wiki",
         aria: t("LINKS_WIKI_ARIA"),
         text: t("LINKS_WIKI"),
       },
@@ -685,22 +817,16 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
         text: t("LINKS_YT"),
       },
       { 
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" stroke="none" strokeWidth="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 640 512"><path d="M524.531,69.836a1.5,1.5,0,0,0-.764-.7A485.065,485.065,0,0,0,404.081,32.03a1.816,1.816,0,0,0-1.923.91,337.461,337.461,0,0,0-14.9,30.6,447.848,447.848,0,0,0-134.426,0,309.541,309.541,0,0,0-15.135-30.6,1.89,1.89,0,0,0-1.924-.91A483.689,483.689,0,0,0,116.085,69.137a1.712,1.712,0,0,0-.788.676C39.068,183.651,18.186,294.69,28.43,404.354a2.016,2.016,0,0,0,.765,1.375A487.666,487.666,0,0,0,176.02,479.918a1.9,1.9,0,0,0,2.063-.676A348.2,348.2,0,0,0,208.12,430.4a1.86,1.86,0,0,0-1.019-2.588,321.173,321.173,0,0,1-45.868-21.853,1.885,1.885,0,0,1-.185-3.126c3.082-2.309,6.166-4.711,9.109-7.137a1.819,1.819,0,0,1,1.9-.256c96.229,43.917,200.41,43.917,295.5,0a1.812,1.812,0,0,1,1.924.233c2.944,2.426,6.027,4.851,9.132,7.16a1.884,1.884,0,0,1-.162,3.126,301.407,301.407,0,0,1-45.89,21.83,1.875,1.875,0,0,0-1,2.611,391.055,391.055,0,0,0,30.014,48.815,1.864,1.864,0,0,0,2.063.7A486.048,486.048,0,0,0,610.7,405.729a1.882,1.882,0,0,0,.765-1.352C623.729,277.594,590.933,167.465,524.531,69.836ZM222.491,337.58c-28.972,0-52.844-26.587-52.844-59.239S193.056,219.1,222.491,219.1c29.665,0,53.306,26.82,52.843,59.239C275.334,310.993,251.924,337.58,222.491,337.58Zm195.38,0c-28.971,0-52.843-26.587-52.843-59.239S388.437,219.1,417.871,219.1c29.667,0,53.307,26.82,52.844,59.239C470.715,310.993,447.538,337.58,417.871,337.58Z"/></svg>`,
-        href: "https://discord.gg/DyfAXFwUHc",
-        aria: t("LINKS_DISCORD_ARIA"),
-        text: t("LINKS_DISCORD"),
+        icon: getIcon("graduation-cap").outerHTML,
+        href: "https://community.sketch-your-mind.com/ee",
+        aria: t("LINKS_JOIN_SYM_ARIA"),
+        text: t("LINKS_JOIN_SYM"),
       },
       { 
         icon: getIcon("twitter").outerHTML,
         href: "https://twitter.com/zsviczian",
         aria: t("LINKS_TWITTER"),
         text: t("LINKS_TWITTER"),
-      },
-      { 
-        icon: getIcon("graduation-cap").outerHTML,
-        href: "https://visual-thinking-workshop.com",
-        aria: t("LINKS_VTW_ARIA"),
-        text: t("LINKS_VTW"),
       },
       { 
         icon: getIcon("book").outerHTML,
@@ -716,6 +842,7 @@ export class ExcalidrawSettingTab extends PluginSettingTab {
         a.innerHTML = icon + text;
       });
     });
+
 
     // ------------------------------------------------
     // Saving

@@ -78,7 +78,7 @@ export const setDynamicStyle = (
     : isDark ? cmBG().lighterBy(4).mix({color:cmBlack(),ratio:0.5}) : cmBG().darkerBy(4).mix({color:cmBlack(),ratio:0.5});
   
   
-  const text = cmBG().mix({color:isDark?lighter:darker, ratio:mixRatio});
+  const text = () => cmBG().mix({color:isDark?lighter:darker, ratio:mixRatio});
 
   const str = (cm: ColorMaster) => cm.stringHEX({alpha:false});
   const styleObject:{[x: string]: string;} = {
@@ -99,17 +99,17 @@ export const setDynamicStyle = (
     [`--button-gray-2`]: str(gray2()),
     [`--input-border-color`]: str(gray1()),
     [`--input-bg-color`]: str(gray2()),
-    [`--input-label-color`]: str(text),
+    [`--input-label-color`]: str(text()),
     [`--island-bg-color`]: gray2().alphaTo(0.93).stringHEX(),
     [`--popup-secondary-bg-color`]: gray2().alphaTo(0.93).stringHEX(),
-    [`--icon-fill-color`]: str(text),
-    [`--text-primary-color`]: str(text),
+    [`--icon-fill-color`]: str(text()),
+    [`--text()-primary-color`]: str(text()),
     [`--overlay-bg-color`]: gray2().alphaTo(0.6).stringHEX(),
     [`--popup-bg-color`]: str(gray1()),
-    [`--color-on-surface`]: str(text),
+    [`--color-on-surface`]: str(text()),
     [`--default-border-color`]: str(gray1()),
-    //[`--color-gray-100`]: str(text),
-    [`--color-gray-40`]: str(text), //frame
+    //[`--color-gray-100`]: str(text()),
+    [`--color-gray-40`]: str(isDark?text().darkerBy(30):text().lighterBy(30)), //frame
     [`--color-surface-highlight`]: str(gray1()),
     [`--color-gray-20`]: str(gray1()),
     [`--sidebar-border-color`]: str(gray1()),
@@ -117,23 +117,23 @@ export const setDynamicStyle = (
     [`--button-hover-bg`]: str(gray1()),
     [`--sidebar-bg-color`]: gray2().alphaTo(0.93).stringHEX(),
     [`--sidebar-shadow`]: str(gray1()),
-    [`--popup-text-color`]: str(text),
-    [`--code-normal`]: str(text),
+    [`--popup-text()-color`]: str(text()),
+    [`--code-normal`]: str(text()),
     [`--code-background`]: str(gray2()),
-    [`--h1-color`]: str(text),
-    [`--h2-color`]: str(text),
-    [`--h3-color`]: str(text),
-    [`--h4-color`]: str(text),
-    [`color`]: str(text),
+    [`--h1-color`]: str(text()),
+    [`--h2-color`]: str(text()),
+    [`--h3-color`]: str(text()),
+    [`--h4-color`]: str(text()),
+    [`color`]: str(text()),
     ['--excalidraw-caret-color']: textBackgroundColor
         ? str(isLightTheme ? invertColor(textBackgroundColor) : ea.getCM(textBackgroundColor))
         : (isLightTheme ? str(invertColor(color)): color),
     [`--select-highlight-color`]: str(gray1()),
-    [`--color-gray-90`]: str(isDark?text.darkerBy(5):text.lighterBy(5)), //search background
-    [`--color-gray-80`]: str(isDark?text.darkerBy(10):text.lighterBy(10)), //frame
-    [`--color-gray-70`]: str(isDark?text.darkerBy(10):text.lighterBy(10)), //frame
-    [`--default-bg-color`]: str(isDark?text.darkerBy(20):text.lighterBy(20)), //search background,
-    [`--color-gray-50`]: str(text), //frame
+    [`--color-gray-90`]: str(isDark?text().darkerBy(5):text().lighterBy(5)), //search background
+    [`--color-gray-80`]: str(isDark?text().darkerBy(10):text().lighterBy(10)), //frame
+    [`--color-gray-70`]: str(isDark?text().darkerBy(15):text().lighterBy(15)), //frame
+    [`--default-bg-color`]: str(isDark?text().darkerBy(20):text().lighterBy(20)), //search background,
+    [`--color-gray-50`]: str(isDark?text().darkerBy(25):text().lighterBy(25)),
   };
   
     const styleString = Object.keys(styleObject)

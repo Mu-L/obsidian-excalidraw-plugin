@@ -281,10 +281,7 @@ export class ContentSearcher {
     
     // Use setTimeout to ensure DOM has time to update after expanding details
     setTimeout(() => {
-      nextActiveHighlight.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
+      this.scrollResultIntoView(nextActiveHighlight);
     }, 100);
 
     // Update the hit count
@@ -302,5 +299,47 @@ export class ContentSearcher {
       }
       parent = parent.parentElement;
     }
+  }
+
+  private scrollResultIntoView(element: HTMLElement): void {
+    const scrollContainer = this.getScrollContainer(element);
+    const targetRatio = 2 / 3;
+
+    if (!scrollContainer) {
+      const targetScrollTop = window.scrollY + element.getBoundingClientRect().top - window.innerHeight * targetRatio;
+      window.scrollTo({
+        top: Math.max(0, targetScrollTop),
+        behavior: "smooth",
+      });
+      return;
+    }
+
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
+    const targetScrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - containerRect.height * targetRatio;
+    const maxScrollTop = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight);
+
+    scrollContainer.scrollTo({
+      top: Math.min(Math.max(0, targetScrollTop), maxScrollTop),
+      behavior: "smooth",
+    });
+  }
+
+  private getScrollContainer(element: HTMLElement): HTMLElement | null {
+    let parent = element.parentElement;
+
+    while (parent && parent !== document.body) {
+      const style = window.getComputedStyle(parent);
+      const overflowY = style.overflowY;
+      const isScrollable = ["auto", "scroll", "overlay"].includes(overflowY);
+      if (isScrollable && parent.scrollHeight > parent.clientHeight) {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+
+    return document.scrollingElement instanceof HTMLElement
+      ? document.scrollingElement
+      : null;
   }
 }

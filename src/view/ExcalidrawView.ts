@@ -5809,7 +5809,7 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
         React.createElement(
           WelcomeScreen.Center.Heading,
           {
-            color: decoration,
+            color: "var(--color-gray-40)",
             message: nextRankDelta > 0 
               ? `${rank}: ${nextRankDelta} ${t("WELCOME_RANK_NEXT")}` 
               : `${rank}: ${t("WELCOME_RANK_LEGENDARY")}`,
@@ -5833,6 +5833,16 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
           React.createElement(
             WelcomeScreen.Center.MenuItemLink,
             {
+              icon: ICONS.Learn,
+              href: "https://community.sketch-your-mind.com",
+              shortcut: null,
+              "aria-label": t("WELCOME_SYM_ARIA"),
+            },
+            t("WELCOME_SYM_LINK")
+          ),
+          React.createElement(
+            WelcomeScreen.Center.MenuItemLink,
+            {
               icon: ICONS.YouTube,
               href: "https://www.youtube.com/@VisualPKM",
               shortcut: null,
@@ -5843,32 +5853,12 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
           React.createElement(
             WelcomeScreen.Center.MenuItemLink,
             {
-              icon: ICONS.Discord,
-              href: "https://discord.gg/DyfAXFwUHc",
-              shortcut: null,
-              "aria-label": t("WELCOME_DISCORD_ARIA"),
-            },
-            t("WELCOME_DISCORD_LINK")
-          ),
-          React.createElement(
-            WelcomeScreen.Center.MenuItemLink,
-            {
               icon: ICONS.twitter,
               href: "https://twitter.com/zsviczian",
               shortcut: null,
               "aria-label": t("WELCOME_TWITTER_ARIA"),
             },
             t("WELCOME_TWITTER_LINK")
-          ),
-          React.createElement(
-            WelcomeScreen.Center.MenuItemLink,
-            {
-              icon: ICONS.Learn,
-              href: "https://visual-thinking-workshop.com",
-              shortcut: null,
-              "aria-label": t("WELCOME_LEARN_ARIA"),
-            },
-            t("WELCOME_LEARN_LINK")
           ),
           React.createElement(
             WelcomeScreen.Center.MenuItemLink,
@@ -5945,6 +5935,15 @@ export default class ExcalidrawView extends TextFileView implements HoverParent{
         t("TRAY_SWITCH_TO_MD")
       ),
       React.createElement(MainMenu.Separator),
+      React.createElement(
+        MainMenu.Item,
+        {              
+          icon: ICONS.Learn,
+            "aria-label": t("LINKS_JOIN_SYM_ARIA"),
+            onSelect: ()=> openExternalLink("https://community.sketch-your-mind.com", this.app),
+        },
+        t("LINKS_JOIN_SYM")
+      ),
       React.createElement(MainMenu.DefaultItems.Help),
       React.createElement(MainMenu.DefaultItems.ClearCanvas),
     );

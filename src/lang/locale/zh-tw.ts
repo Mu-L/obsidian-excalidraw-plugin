@@ -97,6 +97,7 @@ export default {
   ENTER_LATEX: "輸入 LaTeX 公式",
   EDIT_LATEX: "編輯 LaTeX 公式",
   READ_RELEASE_NOTES: "閱讀本外掛的更新說明",
+  ABOUT_EXCALIDRAW: "關於 Excalidraw",
   RUN_OCR: "OCR 整個繪圖：識別塗鴉和圖片裡的文字並複製到剪貼簿和筆記屬性中",
   RERUN_OCR: "重新 OCR 整個繪圖：識別塗鴉和圖片裡的文字並複製到剪貼簿和筆記屬性中",
   RUN_OCR_ELEMENTS: "OCR 選中的元素：識別塗鴉和圖片裡的文字並複製到剪貼簿",
@@ -222,6 +223,10 @@ export default {
   DISABLE_CONTEXT_MENU_DESC: "停用 Excalidraw 的上下文選單。這在移動裝置上很有用，因為上下文選單有時會在不需要的時候彈出。",
   NOTEBOOKLM_LINK_ARIA: "向 NotebookLM 諮詢有關外掛的幫助。此模型已預載入了我所有的影片轉錄稿、釋出說明和其他幫助內容。與 NotebookLM 聊天，瀏覽我的 250+ 影片和 Excalidraw 檔案。",
   NOTEBOOKLM_LINK_TEXT: "學習外掛。訪問 NotebookLM 知識庫。",
+  EXCALIDRAW_MASTERY_PROMO_ARIA: "開啟 Excalidraw Mastery",
+  EXCALIDRAW_MASTERY_PROMO_HTML: `<p><b>在各種切換與選單中感到迷失嗎？</b></p><p>Excalidraw 是為高強度工作流程打造的 Visual PKM 強大工具，適合 <b>Visual-First Daily Notes</b>、深入的 <b>PDF 研究</b>、<b>自動化</b>、<b>AI 整合</b> 與 <b>Visual Zettelkasten</b>。但這些強大功能也伴隨著複雜度。</p><p>跳過反覆試錯。<a href="https://community.sketch-your-mind.com/em" target="_blank">👉 加入 Excalidraw Mastery</a>，一步一步學會這些具體設定。降低工具摩擦，並與一群擅長視覺思考的支持型社群一起掌握你的知識系統。</p>`,
+  EXCALIDRAW_MASTERY_PROMO_SHOW: "顯示",
+  EXCALIDRAW_MASTERY_PROMO_HIDE: "隱藏",
   LINKS_BUGS_ARIA: "在外掛的 GitHub 頁面報告錯誤和提交功能請求",
   LINKS_BUGS: "報告錯誤",
   LINKS_YT_ARIA: "訪問我的 YouTube 頻道學習視覺思維和 Excalidraw",
@@ -1229,6 +1234,25 @@ export default {
 
   //ReleaseNotes.ts
   RN_WELCOME: "歡迎使用 Excalidraw",
+  FIRST_RUN: `
+Obsidian 的 Excalidraw 外掛遠不只是「畫圖工具」。由於它與 Obsidian 深度整合，它為視覺化個人知識管理帶來了全新的工作方式。
+
+<div style="text-align:center;margin-top:10px;">
+<a href="https://community.sketch-your-mind.com/ee" target="_blank"><img src="https://sketch-your-mind.com/images/logo-EE.png" style="width:50%;"></a>
+</div>
+
+如果你想順利上手、避免一開始就被大量功能淹沒，我非常推薦免費的 **[Excalidraw Essentials](https://community.sketch-your-mind.com/ee)** 微課程。它能幫你快速抓住重點，用清楚的結構掌握核心基礎。
+
+你也不必自己摸索。歡迎加入 **[Sketch Your Mind 社群](https://community.sketch-your-mind.com)**，與其他視覺思考者交流、分享工作流程，一起打造更順暢的 PKM 系統。
+
+如果你想先看看它現在能做到什麼，下面有一段核心功能展示。若想持續了解最新更新，並進一步探索 Visual PKM，也歡迎訂閱我的 YouTube 頻道：[Visual PKM](https://www.youtube.com/@visualPKM)。
+
+感謝使用，祝你玩得愉快！
+
+<div class="excalidraw-videoWrapper">
+<a href="https://www.youtube.com/watch?v=P_Q6avJGoWI" target="_blank"><img src ="https://i.ytimg.com/vi/P_Q6avJGoWI/maxresdefault.jpg" style="width:100%;"></a>
+</div>
+`,
 
   //Excalidraw component
   COMP_IMG: "圖片 & 檔案",

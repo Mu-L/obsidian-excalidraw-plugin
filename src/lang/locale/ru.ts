@@ -67,6 +67,7 @@ export default {
   INSERT_LATEX: `Вставьте формулу LaTeX (например, \\\binom{n}{k} = \\\frac{n!}{k!(n-k)!}).`,
   ENTER_LATEX: "Введите правильное выражение LaTeX",
   READ_RELEASE_NOTES: "Прочитать последние заметки о выпуске",
+  ABOUT_EXCALIDRAW: "О Excalidraw",
   RUN_OCR: "OCR полного чертежа: Захват текста из freedraw + изображения в буфер обмена и doc.props",
   RERUN_OCR: "Повторный запуск полного чертежа OCR: Захват текста из freedraw + изображения в буфер обмена и doc.props",
   RUN_OCR_ELEMENTS: "OCR выделенных элементов: Захват текста из freedraw + изображения в буфер обмена",
@@ -80,6 +81,28 @@ export default {
   RESET_IMG_ASPECT_RATIO: "Сбросить соотношение сторон выбранного элемента изображения",
   TEMPORARY_DISABLE_AUTOSAVE: "Отключить автосохранение до следующего запуска Obsidian (устанавливайте этот параметр, только если вы знаете, что делаете)",
   TEMPORARY_ENABLE_AUTOSAVE: "Включить автосохранение",
+
+  //ReleaseNotes.ts
+  RN_WELCOME: "Добро пожаловать в Excalidraw",
+  FIRST_RUN: `
+Плагин Excalidraw для Obsidian - это гораздо больше, чем «просто» инструмент для рисования. Благодаря глубокой интеграции с Obsidian он открывает совершенно новый подход к визуальному управлению личными знаниями.
+
+<div style="text-align:center;margin-top:10px;">
+<a href="https://community.sketch-your-mind.com/ee" target="_blank"><img src="https://sketch-your-mind.com/images/logo-EE.png" style="width:50%;"></a>
+</div>
+
+Чтобы начать без перегруза, очень рекомендую бесплатный мини-курс **[Excalidraw Essentials](https://community.sketch-your-mind.com/ee)**. Он помогает быстро разобраться в главном и освоить базовые принципы в структурированном формате.
+
+Вам не обязательно разбираться во всем в одиночку. Присоединяйтесь к **[сообществу Sketch Your Mind](https://community.sketch-your-mind.com)**, чтобы общаться с другими визуально мыслящими людьми, делиться своими рабочими процессами и выстраивать более плавную систему PKM.
+
+Если хотите увидеть, что уже возможно прямо сейчас, ниже есть обзор ключевых возможностей. А чтобы следить за новыми обновлениями и идеями по Visual PKM, подписывайтесь на мой YouTube-канал: [Visual PKM](https://www.youtube.com/@visualPKM).
+
+Спасибо и приятной работы!
+
+<div class="excalidraw-videoWrapper">
+<a href="https://www.youtube.com/watch?v=P_Q6avJGoWI" target="_blank"><img src ="https://i.ytimg.com/vi/P_Q6avJGoWI/maxresdefault.jpg" style="width:100%;"></a>
+</div>
+`,
 
   //ExcalidrawView.ts
   NO_SEARCH_RESULT: "Не удалось найти подходящий элемент на чертеже",
@@ -156,6 +179,10 @@ export default {
   RELEASE_NOTES_DESC:
     "<b><u>Переключатель ВКЛ:</u></b> Отображение информации о выпуске при каждом обновлении Excalidraw до новой версии.<br>" +
     "<b><u>Переключатель ВЫКЛ:</u></b> Тихий режим. Вы все еще можете прочитать заметки о выпуске на <a href='https://github.com/zsviczian/obsidian-excalidraw-plugin/releases'>GitHub</a>.",
+  EXCALIDRAW_MASTERY_PROMO_ARIA: "Открыть Excalidraw Mastery",
+  EXCALIDRAW_MASTERY_PROMO_HTML: `<p><b>Потерялись в переключателях и меню?</b></p><p>Excalidraw - мощный инструмент Visual PKM, созданный для сложных рабочих процессов: <b>Visual-First Daily Notes</b>, глубокое <b>PDF-исследование</b>, <b>автоматизация</b>, <b>интеграция ИИ</b> и <b>визуальный Zettelkasten</b>. Но такая мощность неизбежно приносит и сложность.</p><p>Пропустите этап проб и ошибок. <a href="https://community.sketch-your-mind.com/em" target="_blank">👉 Присоединяйтесь к Excalidraw Mastery</a>, чтобы шаг за шагом освоить именно эти настройки. Уберите трение инструмента и развивайте свои знания вместе с поддерживающим сообществом визуально мыслящих людей!</p>`,
+  EXCALIDRAW_MASTERY_PROMO_SHOW: "Показать",
+  EXCALIDRAW_MASTERY_PROMO_HIDE: "Скрыть",
   NEWVERSION_NOTIFICATION_NAME: "Уведомление об обновлении плагина",
   NEWVERSION_NOTIFICATION_DESC:
       "<b><u>Переключатель ВКЛ:</u></b> Показывайте уведомление о появлении новой версии плагина.<br>" +

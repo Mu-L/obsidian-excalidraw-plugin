@@ -97,6 +97,7 @@ export default {
   ENTER_LATEX: "Enter a valid LaTeX expression",
   EDIT_LATEX: "Edit LaTeX formula",
   READ_RELEASE_NOTES: "Read latest release notes",
+  ABOUT_EXCALIDRAW: "About Excalidraw",
   RUN_OCR: "OCR full drawing: Grab text from freedraw + images to clipboard and doc.props",
   RERUN_OCR: "OCR full drawing re-run: Grab text from freedraw + images to clipboard and doc.props",
   RUN_OCR_ELEMENTS: "OCR selected elements: Grab text from freedraw + images to clipboard",
@@ -197,8 +198,8 @@ export default {
   WELCOME_HELP_MENU: "Find help in the hamburger-menu",
   WELCOME_YOUTUBE_ARIA: "Visual PKM YouTube Channel",
   WELCOME_YOUTUBE_LINK: "Check out the Visual PKM YouTube channel.",
-  WELCOME_DISCORD_ARIA: "Join the Discord Server",
-  WELCOME_DISCORD_LINK: "Join the Discord Server",
+  WELCOME_SYM_ARIA: "Learn Excalidraw, Master PKM, Join the Community",
+  WELCOME_SYM_LINK: "Learn Excalidraw, Master PKM, Join the Community",
   WELCOME_TWITTER_ARIA: "Follow me on Twitter",
   WELCOME_TWITTER_LINK: "Follow me on Twitter",
   WELCOME_LEARN_ARIA: "Learn Visual PKM",
@@ -222,12 +223,16 @@ export default {
   DISABLE_CONTEXT_MENU_DESC: "Disables the Excalidraw context menu. This can be useful on Mobile devices where the context menu pops up in unwanted moments.",
   NOTEBOOKLM_LINK_ARIA: "Ask NotebookLM for help about the plugin. This model is pre-loaded with all my video transcripts, release notes and other helpful content. Chat with NotebookLM to explore my 250+ videos and the Excalidraw documentation.",
   NOTEBOOKLM_LINK_TEXT: "Learn the Plugin. Access the NotebookLM knowledgebase.",
+  EXCALIDRAW_MASTERY_PROMO_ARIA: "Open Excalidraw Mastery",
+  EXCALIDRAW_MASTERY_PROMO_HTML: `<p><b>Feeling lost in the toggles and menus?</b></p><p>Excalidraw is a Visual PKM powerhouse built for heavy-duty workflows like <b>Visual-First Daily Notes</b>, deep <b>PDF research</b>, <b>automation</b>, <b>AI integration</b>, and <b>Visual Zettelkasten</b>. But all this power comes with complexity.</p><p>Skip the trial and error. <a href="https://community.sketch-your-mind.com/em" target="_blank">👉 Join Excalidraw Mastery</a> to learn these exact setups step-by-step. Overcome tool friction and master your knowledge alongside a supportive community of visual thinkers!</p>`,
+  EXCALIDRAW_MASTERY_PROMO_SHOW: "Show",
+  EXCALIDRAW_MASTERY_PROMO_HIDE: "Hide",
   LINKS_BUGS_ARIA: "Report bugs and raise feature requsts on the plugin's GitHub page",
   LINKS_BUGS: "Report Bugs",
   LINKS_YT_ARIA: "Check out my YouTube channel to learn about Visual Thinking and Excalidraw",
   LINKS_YT: "Learn on YouTube",
-  LINKS_DISCORD_ARIA: "Join the Visual Thinking Workshop Discord Server",
-  LINKS_DISCORD: "Join the Community",
+  LINKS_JOIN_SYM_ARIA: "Learn Excalidraw, Master Visual Thinking, Join the Community",
+  LINKS_JOIN_SYM: "Learn Excalidraw",
   LINKS_TWITTER: "Follow me",
   LINKS_VTW_ARIA: "Learn about Visual PKM, Excalidraw, Obsidian, ExcaliBrain and more",
   LINKS_VTW: "Join a Workshop",
@@ -1229,6 +1234,25 @@ export default {
 
   //ReleaseNotes.ts
   RN_WELCOME: "Welcome to Excalidraw",
+  FIRST_RUN: `
+The Excalidraw Obsidian plugin is much more than "just" a drawing tool. Because it integrates deeply with Obsidian, it opens up a whole new paradigm for Visual Personal Knowledge Management.
+
+<div style="text-align:center;margin-top:10px;">
+<a href="https://community.sketch-your-mind.com/ee" target="_blank"><img src="https://sketch-your-mind.com/images/logo-EE.png" style="width:50%;"></a>
+</div>
+
+To help you get started without the overwhelm, I highly recommend taking the free **[Excalidraw Essentials](https://community.sketch-your-mind.com/ee)** mini-course. It cuts through the noise and teaches you the fundamentals in a fast, structured way.
+
+You also don't have to figure it all out alone! Come join the **[Sketch Your Mind Community](https://community.sketch-your-mind.com)** to connect with fellow visual thinkers, share your workflows, and build a frictionless PKM system together.
+
+If you'd like to see what's possible right now, here is a showcase of the key features. To keep abreast of the latest updates and to explore visual PKM, please subscribe to my YouTube channel: [Visual PKM](https://www.youtube.com/@visualPKM).
+
+Thank you & Enjoy!
+
+<div class="excalidraw-videoWrapper">
+<a href="https://www.youtube.com/watch?v=P_Q6avJGoWI" target="_blank"><img src ="https://i.ytimg.com/vi/P_Q6avJGoWI/maxresdefault.jpg" style="width:100%;"></a>
+</div>
+`,
 
   //Excalidraw component
   COMP_IMG: "Image & Files",

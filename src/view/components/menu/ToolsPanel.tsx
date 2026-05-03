@@ -220,6 +220,16 @@ export class ToolsPanel extends React.Component<PanelProps, PanelState> {
     new ReleaseNotes(view.app, view.plugin, PLUGIN_VERSION).open();
   }
 
+  actionOpenAboutExcalidraw() {
+    const view = this.getView();
+    if (!view) return;
+    new ReleaseNotes(view.app, view.plugin, null, {
+      message: t("FIRST_RUN"),
+      persistVersion: false,
+      title: t("ABOUT_EXCALIDRAW"),
+    }).open();
+  }
+
   actionConvertExcalidrawToMD() {
     this.getView()?.convertExcalidrawToMD();
   }
@@ -557,6 +567,12 @@ export class ToolsPanel extends React.Component<PanelProps, PanelState> {
                     title={t("READ_RELEASE_NOTES")}
                     action={this.actionOpenReleaseNotes.bind(this)}
                     icon={ICONS.releaseNotes}
+                  />
+                  <ActionButton
+                    key={"about-excalidraw"}
+                    title={t("ABOUT_EXCALIDRAW")}
+                    action={this.actionOpenAboutExcalidraw.bind(this)}
+                    icon={ICONS.Info}
                   />
                   {this.state.isPreviewMode === null ? (
                     <ActionButton

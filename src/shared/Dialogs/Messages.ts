@@ -1,21 +1,33 @@
-export const FIRST_RUN = `
-The Excalidraw Obsidian plugin is much more than "just" a drawing tool. To help you get started here's a showcase of the key Excalidraw plugin features.
-
-If you'd like to learn more, please subscribe to my YouTube channel: [Visual PKM](https://www.youtube.com/channel/UCC0gns4a9fhVkGkngvSumAQ) where I regularly share videos about Obsidian-Excalidraw and about tools and techniques for Visual Personal Knowledge Management.
-
-Thank you & Enjoy!
-
-<div class="excalidraw-videoWrapper">
-<a href="https://www.youtube.com/watch?v=P_Q6avJGoWI" target="_blank"><img src ="https://i.ytimg.com/vi/P_Q6avJGoWI/maxresdefault.jpg" style="width:100%;"></a>
-</div>
-`;
-
 export const RELEASE_NOTES: { [k: string]: string } = {
   Intro: `After each update, you'll see these release notes (you can turn this off in the plugin settings).
 
-I build this plugin in my free time, as a labor of love. Curious about the philosophy behind it? Check out [📕 Sketch Your Mind](https://sketch-your-mind.com). If you find it valuable, say THANK YOU or…
+I build this plugin as a labor of love. Curious about the philosophy behind it? Check out [📕 Sketch Your Mind](https://sketch-your-mind.com). Want to master Excalidraw? Join [Excalidraw Mastery](https://community.sketch-your-mind.com/em). If you find it valuable, say THANK YOU or…
 
 <div class="ex-coffee-div"><a href="https://ko-fi.com/zsolt"><img src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" border="0" alt="Buy Me a Coffee at ko-fi.com"  height=45></a></div>
+`,
+"2.22.2":`
+
+Feeling overwhelmed by Excalidraw’s endless features?
+
+It's not just a drawing tool. Inside Obsidian, it becomes a thinking tool.  
+To unlock linking, embedding, and referencing, you need a mindset shift.
+
+**Join Excalidraw Mastery** to make that shift.  
+Courses, live Q&As, and deep dives to help you move into true 4D Visual PKM.  👉 https://community.sketch-your-mind.com/em
+
+<div style="text-align:center;margin-top:10px;">
+<a href="https://community.sketch-your-mind.com/em" target="_blank"><img src="https://sketch-your-mind.com/images/logo-EM.png" style="width:50%"></a>
+</div>
+
+Excalidraw Mastery is part of the **Sketch Your Mind Community**—a space for visual thinkers.  
+Share your work. Ask questions. Learn from others.  👉 https://community.sketch-your-mind.com
+
+Curious about the philosophy behind it?
+
+<div class="excalidraw-videoWrapper">
+<a href="https://www.youtube.com/watch?v=TnwRlaIdhSU" target="_blank"><img src ="https://sketch-your-mind.com/images/Thumbnail-podcast.jpg" style="width:100%;"></a>
+</div>
+
 `,
 "2.22.1": `
 ## New
